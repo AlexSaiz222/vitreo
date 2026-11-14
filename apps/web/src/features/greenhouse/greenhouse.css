@@ -1,0 +1,103 @@
+/* The greenhouse sheet (A11): the plant chart's rules, more lines. */
+
+.greenhouse-range {
+  margin-block: var(--space-2);
+}
+
+.greenhouse-old {
+  color: var(--ink-soft);
+}
+
+.greenhouse-export {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+/* Inside, the greenhouse's own reading; outside (AEMET), a soft dashed line. */
+.climate-line[data-line='inside'] {
+  stroke: var(--chart-air);
+}
+
+.climate-line[data-line='outside'] {
+  stroke: var(--chart-outside);
+  stroke-dasharray: var(--chart-dash);
+}
+
+.climate-line[data-line='lux'] {
+  stroke: var(--chart-lux);
+}
+
+.climate-dot {
+  border-color: var(--chart-air);
+}
+
+/* The grow light on: a soft wash behind the light line. */
+.climate-shade {
+  fill: var(--chart-grow);
+}
+
+/* When the window, the fan and the light were on, aligned under the plot. */
+.climate-activity {
+  display: grid;
+  gap: var(--space-1);
+  margin-inline-end: var(--chart-axis-width);
+}
+
+.climate-activity-row {
+  display: grid;
+  grid-template-columns: var(--chart-activity-label) 1fr;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.climate-activity-track {
+  position: relative;
+  height: var(--space-2);
+  border-radius: var(--radius-round);
+  background: var(--chart-gap);
+}
+
+.climate-activity-on {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+  border-radius: var(--radius-round);
+  background: var(--chart-activity);
+}
+
+.climate-activity-cursor {
+  position: absolute;
+  top: calc(var(--space-1) * -1);
+  bottom: calc(var(--space-1) * -1);
+  width: 1px;
+  background: var(--ink-soft);
+}
+
+.history-legend > li[data-key='climate-inside']::before {
+  background: var(--chart-air);
+}
+
+.history-legend > li[data-key='outside']::before {
+  background: repeating-linear-gradient(
+    to right,
+    var(--chart-outside) 0 var(--space-1),
+    transparent var(--space-1) calc(var(--space-1) * 2)
+  );
+}
+
+.history-legend > li[data-key='climate-lux']::before {
+  background: var(--chart-lux);
+}
+
+.history-legend > li[data-key='climate-tank']::before {
+  background: var(--chart-line);
+}
+
+.history-legend > li[data-key='shade']::before {
+  height: var(--space-2);
+  background: var(--chart-grow);
+}

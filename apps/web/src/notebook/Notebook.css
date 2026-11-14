@@ -1,0 +1,756 @@
+/* "Cómo se hizo" (D113, D117, D133): a visit through the demo on the app's
+   paper. One reading column: the text at a comfortable measure, every
+   picture and clip across the page, the same size and corners, its caption
+   below. On wide screens the index stays in a column of its own, following
+   the reading; on the rest, a bar on top says where you are. */
+
+:root:has(.notebook) {
+  scroll-padding-block-start: calc(var(--notebook-bar) + var(--space-4));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:has(.notebook) {
+    scroll-behavior: smooth;
+  }
+}
+
+.notebook {
+  min-height: 100%;
+  background: var(--bg);
+}
+
+.notebook a {
+  color: inherit;
+}
+
+.notebook .ui-button,
+.notebook .ui-icon-button {
+  text-decoration: none;
+}
+
+.notebook-layout {
+  padding-inline: var(--gutter-mobile);
+}
+
+.notebook-page {
+  max-width: var(--notebook-wide);
+  margin-inline: auto;
+}
+
+.notebook-side {
+  display: none;
+}
+
+.notebook-end {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-16) var(--gutter-mobile);
+}
+
+/* ─── reading progress and the bar on top */
+
+.notebook-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: var(--notebook-progress);
+  pointer-events: none;
+}
+
+.notebook-progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.notebook-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--notebook-bar);
+  padding: var(--space-2) var(--gutter-mobile);
+  background: var(--bg);
+  border-block-end: 1px solid var(--line);
+}
+
+.notebook-bar-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: var(--target-min);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.notebook-bar-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notebook-bar-number {
+  color: var(--ink-soft);
+}
+
+.notebook-bar-index {
+  padding-inline: var(--space-4);
+}
+
+/* ─── type */
+
+.notebook-kicker {
+  display: block;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--accent-ink);
+}
+
+.notebook-title,
+.notebook-stop-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-40);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-heading);
+  text-wrap: balance;
+}
+
+.notebook-stop-subtitle {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-20);
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+.notebook-section-title {
+  margin: 0;
+  font-size: var(--text-20);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-heading);
+  text-wrap: balance;
+}
+
+.notebook-lead p {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-20);
+  text-wrap: pretty;
+}
+
+.notebook-prose p,
+.notebook-prose ul {
+  margin: var(--space-3) 0 0;
+  text-wrap: pretty;
+}
+
+.notebook-prose code {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: var(--text-14);
+}
+
+.notebook-prose strong {
+  font-weight: var(--weight-medium);
+}
+
+/* ─── cover */
+
+.notebook-cover {
+  padding-block: var(--space-8) 0;
+}
+
+.notebook-cover-text,
+.notebook-stop-head,
+.notebook-section-text {
+  max-width: var(--notebook-measure);
+}
+
+.notebook-facts {
+  margin: var(--space-6) 0 0;
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+.notebook-cover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-8);
+}
+
+.notebook-figure.notebook-hero {
+  margin-block-start: var(--space-10);
+}
+
+/* ─── stops and sections */
+
+.notebook-stop {
+  margin-block-start: var(--space-16);
+  padding-block-start: var(--space-16);
+  border-block-start: 1px solid var(--line);
+}
+
+.notebook-try {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: var(--space-6) 0 0;
+  padding-inline-start: var(--space-3);
+  color: var(--ink-soft);
+  border-inline-start: var(--focus-ring-width) solid var(--accent);
+}
+
+.notebook-try-label {
+  font-weight: var(--weight-medium);
+  color: var(--accent-ink);
+}
+
+.notebook-section {
+  margin-block-start: var(--space-12);
+}
+
+/* What is behind it: folded, for whoever wants the numbers. */
+.notebook-decisions {
+  max-width: var(--notebook-measure);
+  margin-block-start: var(--space-12);
+  border-block: 1px solid var(--line);
+}
+
+.notebook-decisions summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-min);
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.notebook-decisions summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Its own marker: a chevron that turns down when it opens. */
+.notebook-decisions summary .ui-icon {
+  transition: transform calc(var(--duration-micro) * var(--motion-scale)) var(--ease-out);
+}
+
+.notebook-decisions[open] summary .ui-icon {
+  transform: rotate(90deg);
+}
+
+.notebook-decisions summary:hover {
+  color: var(--ink);
+}
+
+.notebook-decisions-count {
+  font-weight: var(--weight-regular);
+}
+
+.notebook-decisions ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0 0 var(--space-4);
+  list-style: none;
+}
+
+.notebook-decisions li {
+  display: grid;
+  /* The ids in one column, so every note starts at the same place. */
+  grid-template-columns: var(--space-12) 1fr;
+  column-gap: var(--space-1);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.notebook-decision-id {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+/* Turning the page: the stop before and the one after. */
+.notebook-turn {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-8);
+}
+
+.notebook-turn-link {
+  display: grid;
+  align-content: center;
+  gap: var(--space-1);
+  min-height: var(--target-min);
+  padding: var(--space-4) var(--space-6);
+  text-decoration: none;
+  background: var(--neu-base);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elev-raised-sm);
+  transition: box-shadow calc(var(--duration-micro) * var(--motion-scale)) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .notebook-turn-link:hover {
+    background: var(--surface-hover);
+    box-shadow: var(--elev-raised-hover);
+  }
+}
+
+.notebook-turn-link[data-direction='next'] {
+  text-align: end;
+}
+
+.notebook-turn-link[data-direction='previous'] .notebook-turn-label::before {
+  content: '← ';
+}
+
+.notebook-turn-link[data-direction='next'] .notebook-turn-label::after {
+  content: ' →';
+}
+
+.notebook-turn-label {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.notebook-turn-name {
+  font-weight: var(--weight-medium);
+}
+
+/* ─── visuals: one frame for all of them */
+
+.notebook-figure {
+  margin: var(--space-6) 0 0;
+}
+
+.notebook-figure figcaption {
+  max-width: var(--notebook-measure);
+  margin-block-start: var(--space-3);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.notebook-zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: zoom-in;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-card);
+}
+
+.notebook-zoom picture {
+  display: block;
+}
+
+.notebook-zoom img,
+.notebook-clip,
+.notebook-compare {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  background: var(--neu-base);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elev-raised-sm);
+}
+
+.notebook-zoom img {
+  transition: box-shadow calc(var(--duration-micro) * var(--motion-scale)) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .notebook-zoom:hover img {
+    box-shadow: var(--elev-raised-hover);
+  }
+}
+
+/* A clip: the video, and its own pause button in the corner. */
+.notebook-clip {
+  position: relative;
+}
+
+.notebook-clip video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.notebook-clip-toggle {
+  position: absolute;
+  inset-block-end: var(--space-3);
+  inset-inline-end: var(--space-3);
+}
+
+/* A comparison: the second picture below, the first over it up to the handle. */
+.notebook-compare {
+  position: relative;
+  touch-action: pan-y;
+}
+
+.notebook-compare img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.notebook-compare-before {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+}
+
+.notebook-compare-handle {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--split);
+  width: var(--focus-ring-width);
+  background: var(--neu-base);
+  box-shadow: var(--elev-float-sm);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.notebook-compare-handle::after {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: var(--target-min);
+  height: var(--target-min);
+  content: '';
+  background: var(--neu-base);
+  border-radius: var(--radius-round);
+  box-shadow: var(--elev-float-sm);
+  transform: translate(-50%, -50%);
+}
+
+/* Low in the corners, where the app's own header and buttons are not. */
+.notebook-compare-label {
+  position: absolute;
+  inset-block-end: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-float-sm);
+  pointer-events: none;
+}
+
+.notebook-compare-label[data-side='before'] {
+  inset-inline-start: var(--space-3);
+}
+
+.notebook-compare-label[data-side='after'] {
+  inset-inline-end: var(--space-3);
+}
+
+/* The whole picture is the slider; its thumb is the handle drawn above. */
+.notebook-compare-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: ew-resize;
+  opacity: 0;
+}
+
+.notebook-compare:has(.notebook-compare-input:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--accent);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Phones: side by side, all the same size, each with its name. */
+.notebook-phones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, var(--notebook-phone)));
+  gap: var(--space-6);
+}
+
+.notebook-phone .notebook-zoom img {
+  border-radius: var(--radius-float);
+}
+
+.notebook-shot-label {
+  display: block;
+  margin-block-start: var(--space-2);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+/* A strip: captures in the order they were taken, the same frame for all. */
+.notebook-strip {
+  display: grid;
+  grid-auto-columns: minmax(var(--notebook-strip-item), 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-1) var(--space-1) var(--space-3);
+  overflow-x: auto;
+  list-style: none;
+  scroll-snap-type: x mandatory;
+}
+
+.notebook-strip li {
+  scroll-snap-align: start;
+}
+
+.notebook-strip .notebook-zoom img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-button);
+}
+
+/* The palette in the text, from the app's own tokens. */
+.notebook-swatches {
+  margin: var(--space-6) 0 0;
+}
+
+.notebook-swatches ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notebook-swatches li {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.notebook-swatch {
+  width: var(--space-10);
+  height: var(--space-10);
+  border-radius: var(--radius-round);
+  box-shadow: var(--elev-raised-sm);
+}
+
+.notebook-swatches figcaption {
+  margin-block-start: var(--space-3);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* ─── the index (margin and dialog) */
+
+.notebook-index,
+.notebook-index-entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notebook-index a,
+.notebook-index-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-min);
+  padding-inline: var(--space-3);
+  font-size: var(--text-14);
+  line-height: var(--leading-heading);
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-radius: var(--radius-button);
+}
+
+.notebook-index a:hover,
+.notebook-index-top:hover {
+  color: var(--ink);
+}
+
+.notebook-index-top,
+.notebook-index > li[data-current='true'] > a {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.notebook-index-number {
+  flex: none;
+  width: var(--space-4);
+  color: var(--ink-soft);
+}
+
+.notebook-index-entries {
+  margin-block-end: var(--space-2);
+  padding-inline-start: var(--space-6);
+}
+
+.notebook-index-entries a {
+  padding-block: var(--space-2);
+  border-inline-start: var(--focus-ring-width) solid var(--line);
+  border-radius: 0;
+}
+
+/* Where you are: a line of the accent, never only the weight. */
+.notebook-index-entries a[aria-current='location'] {
+  color: var(--ink);
+  border-inline-start-color: var(--accent);
+}
+
+.notebook-index-dialog {
+  width: min(100% - 2 * var(--gutter-mobile), var(--sheet-width));
+  max-height: 85dvh;
+  padding: var(--space-4);
+  color: var(--ink);
+  background: var(--bg);
+  border: 0;
+  border-radius: var(--radius-float);
+  box-shadow: var(--elev-float);
+}
+
+.notebook-index-dialog::backdrop,
+.notebook-lightbox::backdrop {
+  background: var(--notebook-backdrop);
+}
+
+.notebook-index-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--space-2);
+  padding-inline-start: var(--space-3);
+}
+
+.notebook-index-dialog-title {
+  margin: 0;
+  font-weight: var(--weight-medium);
+}
+
+/* ─── a capture, larger */
+
+.notebook-lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: var(--space-16) var(--gutter-mobile) var(--space-6);
+  color: var(--ink);
+  background: var(--bg);
+  border: 0;
+}
+
+.notebook-lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.notebook-lightbox-figure {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  max-width: 100%;
+  margin: 0;
+}
+
+.notebook-lightbox-figure img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100dvh - var(--notebook-lightbox-room));
+  border-radius: var(--radius-card);
+  box-shadow: var(--elev-float);
+}
+
+.notebook-lightbox-figure figcaption {
+  max-width: var(--notebook-measure);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.notebook-lightbox-close {
+  position: fixed;
+  inset-block-start: var(--space-4);
+  inset-inline-end: var(--space-4);
+}
+
+/* ─── wider screens */
+
+@media (min-width: 48rem) {
+  .notebook-layout {
+    padding-inline: var(--gutter-desktop);
+  }
+
+  .notebook-cover {
+    padding-block-start: var(--space-12);
+  }
+
+  .notebook-section {
+    margin-block-start: var(--space-16);
+  }
+
+  .notebook-figure {
+    margin-block-start: var(--space-8);
+  }
+}
+
+/* Wider: the index stays in a column of its own; the bar on top goes. */
+@media (min-width: 80rem) {
+  :root:has(.notebook) {
+    scroll-padding-block-start: var(--space-8);
+  }
+
+  .notebook-bar {
+    display: none;
+  }
+
+  .notebook-layout {
+    display: grid;
+    grid-template-columns: var(--notebook-side) minmax(0, var(--notebook-wide));
+    column-gap: var(--space-12);
+    justify-content: center;
+  }
+
+  .notebook-page {
+    margin-inline: 0;
+  }
+
+  .notebook-side {
+    position: sticky;
+    inset-block-start: 0;
+    display: block;
+    align-self: start;
+    max-height: 100dvh;
+    padding-block: var(--space-6);
+    overflow-y: auto;
+  }
+
+  .notebook-side-actions {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+    margin-block-end: var(--space-8);
+  }
+
+  /* Room for the "on" dot before its icon. */
+  .notebook-side-actions .notebook-sound {
+    padding-inline-start: calc(var(--space-6) + var(--space-1));
+  }
+}

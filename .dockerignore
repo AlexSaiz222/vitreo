@@ -1,0 +1,22 @@
+# Only what the hub and simulator images need (infra/hub/Dockerfile,
+# infra/simulator/Dockerfile): the 3D assets, the references and every
+# node_modules stay out of the build context.
+*
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!tsconfig.base.json
+!apps/hub/package.json
+!apps/hub/tsconfig.json
+!apps/hub/src
+!apps/hub/drizzle
+!apps/simulator/package.json
+!apps/simulator/tsconfig.json
+!apps/simulator/src
+!packages/shared/package.json
+!packages/shared/tsconfig.json
+!packages/shared/src
+!packages/sim-core/package.json
+!packages/sim-core/tsconfig.json
+!packages/sim-core/src
+**/*.test.ts

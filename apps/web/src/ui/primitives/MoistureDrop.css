@@ -1,0 +1,27 @@
+/* Not a button: no surface, no light, no shadow, just the drop (D81). */
+
+.ui-moisture-drop {
+  flex: none;
+  width: var(--space-8);
+  height: var(--space-8);
+}
+
+.ui-moisture-drop-water {
+  fill: var(--water);
+}
+
+.ui-moisture-drop-outline {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.ui-moisture-drop[data-state='thirsty'] .ui-moisture-drop-outline {
+  stroke: var(--warm-ink);
+  stroke-width: 2;
+}
+
+.ui-moisture-drop[data-state='unknown'] .ui-moisture-drop-outline {
+  stroke-dasharray: 2 2.5;
+}

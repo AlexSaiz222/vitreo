@@ -1,0 +1,17 @@
+pnpm-lock.yaml
+dist/
+dist-check/
+demo-dist/
+# Written by `pnpm demo:week` (generated, one message per line)
+apps/web/demo/week.json
+build/
+coverage/
+docs/
+*.md
+referencias/
+assets/
+firmware/
+# Written by `pnpm models` (generated)
+apps/web/public/models/
+# Written by `pnpm fonts` (generated)
+apps/web/src/styles/fonts.css

@@ -1,0 +1,94 @@
+{
+  "birds": {
+    "seconds": 96,
+    "pad": 0.25,
+    "hash": "7d0183d7e1",
+    "page": "https://commons.wikimedia.org/wiki/File:Waidachswald_Oberschefflenz_Abend_20250616_2005.ogg"
+  },
+  "crickets": {
+    "seconds": 48,
+    "pad": 0.25,
+    "hash": "b37d6e538a",
+    "page": "https://freesound.org/people/Defelozedd94/sounds/522299/"
+  },
+  "wind": {
+    "seconds": 48,
+    "pad": 0.25,
+    "hash": "d393ea8f54",
+    "page": "https://freesound.org/people/mario1298/sounds/181252/"
+  },
+  "water": {
+    "seconds": 24,
+    "pad": 0.25,
+    "hash": "9087b0d98f",
+    "page": "https://commons.wikimedia.org/wiki/File:363120_fractalstudios_water-trickle.wav"
+  },
+  "fan": {
+    "seconds": 10,
+    "pad": 0.25,
+    "hash": "1230157d79",
+    "page": "https://freesound.org/people/edhutschek/sounds/219247/"
+  },
+  "rainLight": {
+    "seconds": 48,
+    "pad": 0.25,
+    "hash": "30520b5f64",
+    "page": "https://archive.org/details/soundica-fs-430765-long-easy-rain-08-wav"
+  },
+  "rain": {
+    "seconds": 48,
+    "pad": 0.25,
+    "hash": "ded274285b",
+    "page": "https://commons.wikimedia.org/wiki/File:Light_Rain_Distant_Thunder_July_5th_2016.wav"
+  },
+  "rainHeavy": {
+    "seconds": 48,
+    "pad": 0.25,
+    "hash": "dd055999a1",
+    "page": "https://archive.org/details/soundica-fs-812780-rain-in-the-vietnam"
+  },
+  "rainGlass": {
+    "seconds": 28,
+    "pad": 0.25,
+    "hash": "b627f96dc1",
+    "page": "https://freesound.org/people/supersnd/sounds/592345/"
+  },
+  "blackbird": {
+    "phrases": [
+      {
+        "at": 0.3,
+        "seconds": 3.79
+      },
+      {
+        "at": 4.39,
+        "seconds": 1.97
+      },
+      {
+        "at": 6.66,
+        "seconds": 2.29
+      },
+      {
+        "at": 9.25,
+        "seconds": 3.17
+      },
+      {
+        "at": 12.72,
+        "seconds": 2.31
+      },
+      {
+        "at": 15.33,
+        "seconds": 2.91
+      },
+      {
+        "at": 18.54,
+        "seconds": 1.97
+      },
+      {
+        "at": 20.81,
+        "seconds": 2.37
+      }
+    ],
+    "hash": "add667fd16",
+    "page": "https://commons.wikimedia.org/wiki/File:%D0%A7%D0%BE%D1%80%D0%BD%D0%B8%D0%B9_%D0%B4%D1%80%D1%96%D0%B7%D0%B4.ogg"
+  }
+}

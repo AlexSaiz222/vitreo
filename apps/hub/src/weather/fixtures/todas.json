@@ -1,0 +1,41 @@
+[
+  {
+    "idema": "3195",
+    "lon": -3.678056,
+    "fint": "2026-10-13T15:00:00",
+    "ta": 19.1,
+    "lat": 40.411667,
+    "ubi": "MADRID, RETIRO"
+  },
+  {
+    "idema": "3129",
+    "lon": -3.555556,
+    "fint": "2026-10-13T15:00:00",
+    "ta": 18.4,
+    "lat": 40.466667,
+    "ubi": "MADRID AEROPUERTO"
+  },
+  {
+    "idema": "3194U",
+    "lon": -3.724167,
+    "fint": "2026-10-13T15:00:00",
+    "ta": 18.9,
+    "lat": 40.451944,
+    "ubi": "MADRID, CIUDAD UNIVERSITARIA"
+  },
+  {
+    "idema": "3175",
+    "lon": -3.446667,
+    "fint": "2026-10-13T15:00:00",
+    "ta": 18.0,
+    "lat": 40.483333,
+    "ubi": "TORREJÓN DE ARDOZ"
+  },
+  {
+    "idema": "3196",
+    "lon": -3.786111,
+    "fint": "2026-10-13T15:00:00",
+    "lat": 40.375556,
+    "ubi": "MADRID, CUATRO VIENTOS"
+  }
+]

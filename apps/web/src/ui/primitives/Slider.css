@@ -1,0 +1,105 @@
+/* The native range input, restyled: keyboard, touch and screen readers for
+   free. A sunken groove filled with the accent up to the value, and a
+   raised knob that sinks while it is held. */
+
+.ui-slider {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.ui-slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.ui-slider-label {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.ui-slider-value {
+  font-size: var(--text-16);
+  /* "40 %" never splits over two lines. */
+  white-space: nowrap;
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-slider-input {
+  width: 100%;
+  height: var(--target-min);
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-slider-input::-webkit-slider-runnable-track {
+  height: var(--space-3);
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--neu-base) var(--fill));
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-inset-sm);
+}
+
+.ui-slider-input::-moz-range-track {
+  height: var(--space-3);
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-inset-sm);
+}
+
+.ui-slider-input::-moz-range-progress {
+  height: var(--space-3);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+.ui-slider-input::-webkit-slider-thumb {
+  width: var(--space-8);
+  height: var(--space-8);
+  margin-block-start: calc((var(--space-3) - var(--space-8)) / 2);
+  background: var(--neu-base);
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+  appearance: none;
+  transition: box-shadow calc(var(--duration-press) * var(--motion-scale)) var(--ease-out);
+}
+
+.ui-slider-input::-moz-range-thumb {
+  width: var(--space-8);
+  height: var(--space-8);
+  background: var(--neu-base);
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+}
+
+.ui-slider-input:active::-webkit-slider-thumb {
+  box-shadow: var(--elev-pressed);
+}
+
+.ui-slider-input:active::-moz-range-thumb {
+  box-shadow: var(--elev-pressed);
+}
+
+/* Under the pointer (D131): the thumb comes up a little, lighter. */
+@media (hover: hover) and (pointer: fine) {
+  .ui-slider-input:hover:not(:disabled, :active)::-webkit-slider-thumb {
+    background: var(--surface-hover);
+    box-shadow: var(--elev-raised-hover);
+  }
+
+  .ui-slider-input:hover:not(:disabled, :active)::-moz-range-thumb {
+    background: var(--surface-hover);
+    box-shadow: var(--elev-raised-hover);
+  }
+}
+
+.ui-slider-input:focus-visible {
+  border-radius: var(--radius-pill);
+  outline-offset: var(--space-1);
+}

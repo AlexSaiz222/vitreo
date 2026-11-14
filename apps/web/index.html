@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#faf9f6" />
+    <meta name="description" content="Gemelo digital de un pequeño invernadero doméstico." />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <title>Vitreo</title>
+    <!-- The two upright faces on screen at first paint (D82); the italic waits. -->
+    <link
+      rel="preload"
+      href="/fonts/young-serif-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/schibsted-grotesk.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <!-- Background before any stylesheet loads (tokens.css --bg, day and night). -->
+    <style>
+      html {
+        background: #faf9f6;
+      }
+      html[data-theme='night'] {
+        background: #161a22;
+        color-scheme: dark;
+      }
+    </style>
+    <!--
+      Day or night before the first paint, so a night visit never flashes the
+      day background. Same maths as suncalc (src/app/dayNight.ts, checked by
+      src/app/themeBoot.test.ts); the app keeps it in sync afterwards.
+    -->
+    <script id="theme-boot">
+      (function () {
+        /* sun:start */
+        function sunAltitude(ms, lat, lng) {
+          var rad = Math.PI / 180;
+          var sin = Math.sin;
+          var cos = Math.cos;
+          var d = ms / 86400000 - 10957.5;
+          var t = d / 36525;
+          var M = rad * (357.52911 + t * 35999.05029);
+          var C = rad * (1.914602 * sin(M) + 0.019993 * sin(2 * M) + 0.000289 * sin(3 * M));
+          var Om = rad * (125.04 - 1934.136 * t);
+          var L = rad * (280.46646 + t * 36000.76983) + C - rad * (0.00569 + 0.00478 * sin(Om));
+          var e = rad * (23.439291 - 0.0130042 * t + 0.00256 * cos(Om));
+          var ra = Math.atan2(cos(e) * sin(L), cos(L));
+          var dec = Math.asin(sin(e) * sin(L));
+          var H = rad * (280.46061837 + 360.98564736629 * d) + rad * lng - ra;
+          var phi = rad * lat;
+          var h = Math.asin(sin(phi) * sin(dec) + cos(phi) * cos(dec) * cos(H));
+          var r = Math.max(h, 0);
+          return (h + 0.0002967 / Math.tan(r + 0.00312536 / (r + 0.08901179))) / rad;
+        }
+        /* sun:end */
+        var forced = new URLSearchParams(location.search).get('theme');
+        if (forced !== 'day' && forced !== 'night') {
+          /* The HUD setting (src/app/themeChoice.ts), if storage works; in
+             the demo, only for this visit. */
+          try {
+            forced = ('%MODE%' === 'demo' ? sessionStorage : localStorage).getItem('vitreo.theme');
+          } catch (error) {
+            forced = null;
+          }
+          /* Nothing chosen yet: day (D116). "auto" follows the sun. */
+          if (forced === null) forced = 'day';
+        }
+        var lat = Number('%VITE_LOCATION_LAT%');
+        var lng = Number('%VITE_LOCATION_LNG%');
+        // Ajustes › Ubicación, as the hub last said it (data/hub.ts).
+        try {
+          var hub = JSON.parse(localStorage.getItem('vitreo.hub') || 'null');
+          var place = hub && hub.settings && hub.settings.location;
+          if (place && isFinite(place.lat) && isFinite(place.lng)) {
+            lat = place.lat;
+            lng = place.lng;
+          }
+        } catch (error) {
+          // Storage blocked or unreadable: the build's location.
+        }
+        if (!isFinite(lat) || !isFinite(lng)) {
+          lat = 40.42;
+          lng = -3.7;
+        }
+        var night =
+          forced === 'day' || forced === 'night'
+            ? forced === 'night'
+            : sunAltitude(Date.now(), lat, lng) <= -0.833;
+        document.documentElement.setAttribute('data-theme', night ? 'night' : 'day');
+        if (night) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#161a22');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+CREATE INDEX `soil_device_ts` ON `soil` (`device`,`ts`);

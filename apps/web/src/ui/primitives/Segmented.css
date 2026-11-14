@@ -1,0 +1,92 @@
+/* One choice among a few. The group is a raised pill; the chosen option
+   sinks into it (inset) and is marked with an accent dot and ink text. */
+
+.ui-segmented {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+}
+
+.ui-segmented-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--target-min);
+  min-height: var(--target-min);
+  /* Room at the start for the dot, on every option: choosing never resizes. */
+  padding: 0 var(--space-3) 0 var(--space-6);
+  font: inherit;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    box-shadow calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    background-color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-segmented-option[aria-checked='true'] {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  box-shadow: var(--elev-inset-sm);
+}
+
+/* The dot is always there, faded out until its option is chosen. */
+.ui-segmented-option::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--space-2);
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-block-start: calc(var(--space-1) * -1);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    scale calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+}
+
+.ui-segmented-option[aria-checked='true']::before {
+  opacity: 1;
+  scale: 1;
+}
+
+/* As wide as its label at the heavier weight, so the weight changes in place. */
+.ui-segmented-label {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ui-segmented-label::after {
+  content: attr(data-label);
+  height: 0;
+  overflow: hidden;
+  font-weight: var(--weight-medium);
+  visibility: hidden;
+}
+
+.ui-segmented-option:disabled,
+.ui-segmented-option[aria-disabled='true'] {
+  cursor: default;
+}
+
+/* Under the pointer (D131): an option not chosen lights up a little and
+   its words darken; the chosen one stays as it is. */
+@media (hover: hover) and (pointer: fine) {
+  .ui-segmented-option:hover:not([aria-checked='true'], :disabled, [aria-disabled='true']) {
+    color: var(--ink);
+    background-color: var(--surface-hover);
+  }
+}

@@ -1,0 +1,109 @@
+/* Primitives catalogue (development only). The scene stays behind, as the
+   HUD will see it; the sections float over it. */
+
+.lab {
+  position: relative;
+  min-height: 100%;
+  padding: var(--gutter-mobile);
+}
+
+.lab-scene {
+  position: fixed;
+  inset: 0;
+}
+
+.lab-title {
+  position: relative;
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+}
+
+.lab-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sheet-width)), 1fr));
+  align-items: start;
+  gap: var(--space-6);
+}
+
+.lab-section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.lab-heading,
+.lab-label {
+  margin: 0;
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.lab-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.lab-field {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.lab-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--space-16), 1fr));
+  gap: var(--space-4);
+}
+
+.lab-swatch {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.lab-dock {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.lab-dials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: var(--space-4);
+}
+
+.lab-toasts {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lab-note,
+.lab-soft {
+  margin: 0;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.lab-mood {
+  margin: 0;
+  font-size: var(--text-20);
+}
+
+@media (min-width: 48rem) {
+  .lab {
+    padding: var(--gutter-desktop);
+  }
+}

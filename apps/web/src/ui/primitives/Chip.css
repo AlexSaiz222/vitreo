@@ -1,0 +1,34 @@
+.ui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--space-8);
+  padding: 0 var(--space-3);
+  font-size: var(--text-14);
+  color: var(--ink);
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+  white-space: nowrap;
+}
+
+.ui-chip .ui-icon {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+.ui-chip[data-tone='good'] .ui-icon {
+  color: var(--accent);
+}
+
+/* The warm tone tints the chip; the icon and the edge carry it at 3:1+. */
+.ui-chip[data-tone='attention'] {
+  background: color-mix(in srgb, var(--warm) 14%, var(--neu-base));
+  box-shadow:
+    var(--elev-raised-sm),
+    inset 0 0 0 1px var(--warm-ink);
+}
+
+.ui-chip[data-tone='attention'] .ui-icon {
+  color: var(--warm-ink);
+}

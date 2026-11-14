@@ -1,0 +1,230 @@
+/* History in the plant's sheet (A5, D88). Flat on the sheet: a chart is
+   neither pressed nor an input, so it is not sunken (D81). */
+
+.history {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.history-chart {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  margin: 0;
+}
+
+.history-plot {
+  position: relative;
+  height: var(--chart-height);
+  /* Room for the y labels on the right and the marks below. */
+  margin-inline-end: var(--chart-axis-width);
+  margin-block: var(--space-3);
+  border-radius: var(--radius-button);
+  touch-action: pan-y;
+  cursor: crosshair;
+}
+
+.history-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.history-grid {
+  stroke: var(--chart-grid);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.history-before {
+  fill: transparent;
+}
+
+.history-gap {
+  fill: var(--chart-gap);
+}
+
+.history-band-edge {
+  stop-color: var(--chart-band);
+  stop-opacity: 0;
+}
+
+.history-band-core {
+  stop-color: var(--chart-band);
+}
+
+.history-line {
+  fill: none;
+  stroke: var(--chart-line);
+  stroke-width: var(--chart-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.history-line[data-thirsty='true'] {
+  stroke: var(--chart-thirsty);
+}
+
+.history-cursor {
+  stroke: var(--ink-soft);
+  stroke-width: 1px;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.history-dot {
+  position: absolute;
+  width: var(--space-3);
+  height: var(--space-3);
+  translate: -50% -50%;
+  background: var(--neu-base);
+  border: var(--chart-stroke) solid var(--chart-line);
+  border-radius: var(--radius-round);
+  pointer-events: none;
+}
+
+/* A watering, under the line: filled for yours, a ring for automatic. */
+.history-mark {
+  position: absolute;
+  bottom: calc(var(--space-3) * -1);
+  width: var(--space-2);
+  height: var(--space-2);
+  translate: -50% 50%;
+  background: var(--water-ink);
+  border: var(--chart-stroke) solid var(--water-ink);
+  border-radius: var(--radius-round);
+  pointer-events: none;
+}
+
+.history-mark[data-source='auto'] {
+  background: var(--neu-base);
+}
+
+/* A note or photo (A8), above the plot: a small diamond, filled for a photo. */
+.history-note {
+  position: absolute;
+  top: calc(var(--space-3) * -1);
+  width: var(--space-2);
+  height: var(--space-2);
+  translate: -50% -50%;
+  rotate: 45deg;
+  background: var(--neu-base);
+  border: var(--chart-stroke) solid var(--chart-note);
+  pointer-events: none;
+}
+
+.history-note[data-kind='photo'] {
+  background: var(--chart-note);
+}
+
+.history-axis-y {
+  position: absolute;
+  inset: 0 calc(var(--chart-axis-width) * -1) 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: var(--chart-axis-width);
+  /* The newest point ends at the plot's edge: its line must not touch the label. */
+  padding-inline-start: var(--space-2);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+.history-axis-y > span {
+  line-height: 1;
+  translate: 0 -50%;
+}
+
+.history-axis-y > span:last-child {
+  translate: 0 50%;
+}
+
+.history-axis-x {
+  display: flex;
+  justify-content: space-between;
+  margin-inline-end: var(--chart-axis-width);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.history-readout {
+  margin: 0;
+  min-height: calc(var(--text-14) * 1.5);
+  font-size: var(--text-14);
+}
+
+.history-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.history-legend > li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.history-legend > li::before {
+  content: '';
+  width: var(--space-3);
+  height: var(--space-1);
+  border-radius: var(--radius-round);
+  background: var(--chart-line);
+}
+
+.history-legend > li[data-key='thirsty']::before {
+  background: var(--chart-thirsty);
+}
+
+.history-legend > li[data-key='band']::before {
+  height: var(--space-2);
+  background: var(--chart-band);
+}
+
+.history-legend > li[data-key='gap']::before {
+  height: var(--space-2);
+  background: var(--chart-gap);
+}
+
+.history-legend > li[data-key='user']::before,
+.history-legend > li[data-key='auto']::before {
+  width: var(--space-2);
+  height: var(--space-2);
+  border: var(--chart-stroke) solid var(--water-ink);
+  background: var(--water-ink);
+}
+
+.history-legend > li[data-key='auto']::before {
+  background: var(--neu-base);
+}
+
+.history-legend > li[data-key='note']::before {
+  width: var(--space-2);
+  height: var(--space-2);
+  rotate: 45deg;
+  border: var(--chart-stroke) solid var(--chart-note);
+  border-radius: 0;
+  background: var(--neu-base);
+}
+
+.history-empty {
+  max-width: 36ch;
+}
+
+.history-past {
+  justify-self: start;
+}
+
+.history-csv {
+  text-decoration: none;
+}

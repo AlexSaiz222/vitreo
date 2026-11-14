@@ -1,0 +1,259 @@
+[
+  {
+    "id": "escena-dia",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-escena-dia.png",
+    "width": 1920
+  },
+  {
+    "id": "escena-noche",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-escena-noche.png",
+    "width": 1920
+  },
+  {
+    "id": "escena-dormida",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-escena-dormida.png",
+    "width": 1920
+  },
+  {
+    "id": "modelo-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-modelo-cerca.png",
+    "width": 1920
+  },
+  {
+    "id": "ficha",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-ficha.png",
+    "width": 1920
+  },
+  {
+    "id": "grafica",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-grafica.png",
+    "width": 1920
+  },
+  {
+    "id": "deposito-vacio",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-deposito-vacio.png",
+    "width": 1920
+  },
+  {
+    "id": "sensor-roto",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-sensor-roto.png",
+    "width": 1920
+  },
+  {
+    "id": "lluvia-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-lluvia-cerca.png",
+    "width": 1920
+  },
+  {
+    "id": "tiempo",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-tiempo.png",
+    "width": 1920
+  },
+  {
+    "id": "invernadero",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-invernadero.png",
+    "width": 1920
+  },
+  {
+    "id": "sonido",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-sonido.png",
+    "width": 1920
+  },
+  {
+    "id": "movil-escena",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-movil-escena.png",
+    "width": 640
+  },
+  {
+    "id": "movil-noche",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-movil-noche.png",
+    "width": 640
+  },
+  {
+    "id": "movil-ficha",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-movil-ficha.png",
+    "width": 640
+  },
+  {
+    "id": "movil-riego-auto",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-movil-riego-auto.png",
+    "width": 640
+  },
+  {
+    "id": "movil-diario",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-movil-diario.png",
+    "width": 640
+  },
+  {
+    "id": "movil-sin-3d",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-movil-sin-3d.png",
+    "width": 640
+  },
+  {
+    "id": "clip-escena",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-escena.png",
+    "width": 1500
+  },
+  {
+    "id": "clip-riego",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-riego.png",
+    "width": 1500
+  },
+  {
+    "id": "clip-aire",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-aire.png",
+    "width": 1500
+  },
+  {
+    "id": "clip-luz",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-luz.png",
+    "width": 1500
+  },
+  {
+    "id": "clip-lluvia",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-lluvia.png",
+    "width": 1500
+  },
+  {
+    "id": "clip-rebobinar",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-rebobinar.png",
+    "width": 1500
+  },
+  {
+    "id": "clip-dia-en-un-minuto",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-clip-dia-en-un-minuto.png",
+    "width": 1500
+  },
+  {
+    "id": "c1-primer-dia",
+    "from": "referencias/progreso/2026-09-30-fase1-revision-dia.png",
+    "width": 800,
+    "crop": {
+      "left": 235,
+      "top": 90,
+      "width": 800,
+      "height": 600
+    }
+  },
+  {
+    "id": "c1-provisional",
+    "from": "referencias/progreso/2026-10-01-ref03-comparacion-ref-03.png",
+    "width": 760,
+    "crop": {
+      "left": 980,
+      "top": 10,
+      "width": 760,
+      "height": 570
+    }
+  },
+  {
+    "id": "c2-v1",
+    "from": "referencias/progreso/2026-10-03-blender-invernadero-v1.png",
+    "width": 1300,
+    "crop": {
+      "left": 150,
+      "top": 20,
+      "width": 1300,
+      "height": 975
+    }
+  },
+  {
+    "id": "c2-v19",
+    "from": "referencias/progreso/2026-10-04-blender-invernadero-v19.png",
+    "width": 1360,
+    "crop": {
+      "left": 80,
+      "top": 40,
+      "width": 1360,
+      "height": 960
+    }
+  },
+  {
+    "id": "c7-nieve-noche",
+    "from": "referencias/progreso/2026-11-12-nieve-noche.png",
+    "width": 1440,
+    "crop": {
+      "left": 560,
+      "top": 280,
+      "width": 1440,
+      "height": 1080
+    }
+  },
+  {
+    "id": "ficha-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-ficha.png",
+    "width": 770,
+    "crop": {
+      "left": 1560,
+      "top": 70,
+      "width": 770,
+      "height": 1100
+    }
+  },
+  {
+    "id": "grafica-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-grafica.png",
+    "width": 770,
+    "crop": {
+      "left": 1560,
+      "top": 70,
+      "width": 770,
+      "height": 1100
+    }
+  },
+  {
+    "id": "sensor-roto-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-sensor-roto.png",
+    "width": 770,
+    "crop": {
+      "left": 1560,
+      "top": 70,
+      "width": 770,
+      "height": 1100
+    }
+  },
+  {
+    "id": "tiempo-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-tiempo.png",
+    "width": 770,
+    "crop": {
+      "left": 1560,
+      "top": 70,
+      "width": 770,
+      "height": 1100
+    }
+  },
+  {
+    "id": "invernadero-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-invernadero.png",
+    "width": 770,
+    "crop": {
+      "left": 1560,
+      "top": 70,
+      "width": 770,
+      "height": 1100
+    }
+  },
+  {
+    "id": "sonido-cerca",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-sonido.png",
+    "width": 770,
+    "crop": {
+      "left": 1560,
+      "top": 70,
+      "width": 770,
+      "height": 1100
+    }
+  },
+  {
+    "id": "evolucion-hoy",
+    "from": "referencias/progreso/2026-11-10-cuaderno-v3-escena-dia.png",
+    "width": 800,
+    "crop": {
+      "left": 533,
+      "top": 270,
+      "width": 1334,
+      "height": 1000
+    }
+  }
+]

@@ -1,0 +1,23 @@
+/* One place, several texts on top of each other (SwapText): as wide as the
+   longest, so a change never shifts what is around it. */
+
+.ui-swap-text {
+  display: inline-grid;
+}
+
+.ui-swap-text > * {
+  grid-area: 1 / 1;
+  text-align: center;
+  transition:
+    opacity calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    visibility 0s;
+}
+
+/* Out of sight (and of the accessible name) once it has faded. */
+.ui-swap-text > [data-shown='false'] {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    visibility 0s linear calc(var(--duration-reveal) * var(--motion-scale));
+}

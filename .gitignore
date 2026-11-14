@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+dist-check/
+# The public demo, built and checked (pnpm demo:build)
+demo-dist/
+build/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Tests
+playwright-report/
+test-results/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+# The public demo's environment (D103): versioned, nothing secret or of home.
+!apps/web/demo/.env.demo
+
+# Firmware (PlatformIO)
+firmware/.pio/
+firmware/.vscode/
+
+# Hub data: backups and archives (data/hub/), the dev hub (data/hub-dev/)
+/data/
+*.sqlite
+*.sqlite-journal
+*.db
+
+# Blender
+*.blend1
+*.blend2
+# Local copies of earlier versions: Git already keeps the history (docs/04).
+assets/blender/backups/
+
+# Claude Code (personal)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# OS / editors
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.log
+
+# Downloaded audio sources (pnpm audio)
+assets/audio/.cache/
+
+# The landing video's working frames (pnpm video:landing)
+video/frames/
+video/test-*.jpg
+# The notebook's clips, frame by frame (pnpm notebook:shots)
+video/frames-notebook/
+
+# The social trailer (video/trailer): what `npm run assets` gathers and what hyperframes leaves
+video/trailer/assets/
+video/trailer/.hyperframes/
+video/trailer/renders/
+video/trailer/snapshots/
+
+# The trailer flight working frames (pnpm video:trailer)
+video/frames-trailer/

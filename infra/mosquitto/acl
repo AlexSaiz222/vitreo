@@ -1,0 +1,27 @@
+# Vitreo · Mosquitto ACL
+# Topics: vitreo/<deviceId>/{status,telemetry,event,cmd,ack,config,weather}
+# Anything not listed here is denied.
+
+# The ESP32 (and the simulator): publishes its state, receives orders and config.
+# TODO(phase 3): restrict each device to its own prefix with `pattern ... vitreo/%u/...`.
+user device
+topic write vitreo/+/status
+topic write vitreo/+/telemetry
+topic write vitreo/+/event
+topic write vitreo/+/ack
+topic read vitreo/+/cmd
+topic read vitreo/+/config
+
+# The hub: reads everything, sends orders and publishes config and the
+# outdoor weather from AEMET (A10).
+user hub
+topic read vitreo/#
+topic write vitreo/+/cmd
+topic write vitreo/+/config
+topic write vitreo/+/weather
+
+# The web app: its password ships in the browser bundle, so it can only read
+# and send orders. Config changes go through the hub API.
+user web
+topic read vitreo/#
+topic write vitreo/+/cmd

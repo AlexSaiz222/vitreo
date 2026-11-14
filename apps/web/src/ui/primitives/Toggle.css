@@ -1,0 +1,90 @@
+/* A switch: the whole row is the target. Off: a plain knob in a sunken
+   track. On: the track takes the accent, the knob slides over and shows a
+   tick (state = position + colour + icon, never the shadow alone). */
+
+.ui-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  min-height: var(--target-min);
+  padding: var(--space-1) 0;
+  font: inherit;
+  color: var(--ink);
+  text-align: start;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-toggle-text {
+  display: grid;
+}
+
+.ui-toggle-description {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.ui-toggle-track {
+  position: relative;
+  flex: none;
+  width: var(--space-16);
+  height: var(--space-8);
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-inset-sm);
+  transition: background-color calc(var(--duration-press) * var(--motion-scale)) var(--ease-out);
+}
+
+.ui-toggle-knob {
+  position: absolute;
+  inset-block-start: var(--space-1);
+  inset-inline-start: var(--space-1);
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  color: var(--accent);
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+}
+
+.ui-toggle-knob .ui-icon {
+  width: var(--space-4);
+  height: var(--space-4);
+  stroke-width: 2.5;
+}
+
+.ui-toggle[aria-checked='true'] .ui-toggle-track {
+  background: color-mix(in srgb, var(--accent) 55%, var(--neu-base));
+}
+
+/* Track 64, knob 24, 4 px from each end: it travels 32 px. */
+.ui-toggle[aria-checked='true'] .ui-toggle-knob {
+  translate: var(--space-8) 0;
+}
+
+.ui-toggle:disabled {
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+/* It slides; under the pointer (D131) it comes up a little, lighter. */
+.ui-toggle-knob {
+  transition:
+    translate calc(var(--duration-press) * var(--motion-scale)) var(--ease-out),
+    background-color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    box-shadow calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ui-toggle:hover:not(:disabled) .ui-toggle-knob {
+    background-color: var(--surface-hover);
+    box-shadow: var(--elev-raised-hover);
+  }
+}

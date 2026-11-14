@@ -1,0 +1,164 @@
+/* Pill buttons (D72). Raised at rest; pressed sinks into an inset well in
+   --duration-press. A button that stays "on" (aria-pressed) stays inset AND
+   shows an accent dot: the state never depends on the shadow alone. */
+
+.ui-button,
+.ui-icon-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: var(--target-min);
+  min-height: var(--target-min);
+  font: inherit;
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  background: var(--neu-base);
+  border: 0;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  box-shadow: var(--elev-raised-sm);
+  cursor: pointer;
+  transition:
+    box-shadow calc(var(--duration-press) * var(--motion-scale)) var(--ease-out),
+    color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    background-color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-button .ui-icon,
+.ui-icon-button .ui-icon {
+  transition: color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+}
+
+.ui-button[aria-disabled='true'],
+.ui-icon-button[aria-disabled='true'] {
+  cursor: default;
+}
+
+.ui-button {
+  padding: 0 var(--space-6);
+}
+
+.ui-button[data-size='lg'] {
+  min-height: calc(var(--target-min) + var(--space-2));
+  font-size: var(--text-16);
+}
+
+.ui-button:active:not(:disabled),
+.ui-icon-button:active:not(:disabled),
+.ui-button[aria-pressed='true'],
+.ui-icon-button[aria-pressed='true'] {
+  box-shadow: var(--elev-pressed);
+}
+
+/* The "on" mark: a small accent dot at the start of the pill. Always there
+   on a button that can be on, faded out while it is off, so it fades in. */
+.ui-button[aria-pressed]::before,
+.ui-icon-button[aria-pressed]::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--space-3);
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-block-start: calc(var(--space-1) * -1);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+    scale calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+}
+
+.ui-button[aria-pressed='true']::before,
+.ui-icon-button[aria-pressed='true']::before {
+  opacity: 1;
+  scale: 1;
+}
+
+.ui-icon-button[aria-pressed]::before {
+  inset-block-start: var(--space-1);
+  inset-inline-start: 50%;
+  margin: 0 0 0 calc(var(--space-1) * -1);
+}
+
+.ui-button[aria-pressed='true'] .ui-icon,
+.ui-icon-button[aria-pressed='true'] .ui-icon {
+  color: var(--accent);
+}
+
+/* The main action (D81, replaces the ink fill of D46): soft and raised a
+   little higher than the rest, tinted with water, label and icon in
+   --water-ink (4.5:1 or more, day and night). */
+.ui-button[data-variant='primary'] {
+  color: var(--water-ink);
+  background: var(--primary-fill);
+  box-shadow: var(--elev-raised-primary);
+}
+
+.ui-button-text {
+  display: grid;
+  justify-items: center;
+  line-height: var(--leading-heading);
+}
+
+.ui-button-detail {
+  font-size: var(--text-12);
+  font-weight: var(--weight-regular);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Disabled still reads as a button: a flat pill (no light, no shadow) on a
+   slightly darker fill, with dimmed text and icon. Say why next to it. */
+.ui-button:disabled,
+.ui-icon-button:disabled {
+  color: var(--ink-soft);
+  background: var(--surface-disabled);
+  box-shadow: none;
+  cursor: default;
+}
+
+.ui-button:disabled::before,
+.ui-icon-button:disabled::before {
+  display: none;
+}
+
+/* Under the pointer (D131), with a mouse only (a finger has no hover): a
+   touch lighter and a little higher, so it reads as pressable, as the tick
+   that plays then says. A button that is on stays sunken, only lighter. */
+@media (hover: hover) and (pointer: fine) {
+  .ui-button:hover:not(:disabled, [aria-disabled='true'], :active),
+  .ui-icon-button:hover:not(:disabled, [aria-disabled='true'], :active) {
+    background-color: var(--surface-hover);
+    box-shadow: var(--elev-raised-hover);
+  }
+
+  .ui-button[data-variant='primary']:hover:not(:disabled, [aria-disabled='true'], :active) {
+    background-color: var(--primary-fill-hover);
+  }
+
+  .ui-button[aria-pressed='true']:hover:not(:disabled):not([aria-disabled='true']),
+  .ui-icon-button[aria-pressed='true']:hover:not(:disabled):not([aria-disabled='true']) {
+    box-shadow: var(--elev-pressed);
+  }
+}
+
+.ui-icon-button {
+  width: var(--target-min);
+  padding: 0;
+}
+
+.ui-icon-button[data-size='lg'] {
+  width: calc(var(--target-min) + var(--space-3));
+  height: calc(var(--target-min) + var(--space-3));
+}
+
+.ui-icon-button .ui-icon {
+  width: 1.375rem;
+  height: 1.375rem;
+}

@@ -1,0 +1,24 @@
+* text=auto eol=lf
+*.sh text eol=lf
+
+# Binary 3D, texture, audio and video assets (plain git in this public snapshot)
+*.blend binary
+*.glb   binary
+*.gltf  binary
+*.bin   binary
+*.fbx   binary
+*.exr   binary
+*.hdr   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ktx2  binary
+*.psd   binary
+*.tga   binary
+*.ogg   binary
+*.mp3   binary
+*.wav   binary
+*.m4a   binary
+*.webm  binary
+*.mp4   binary

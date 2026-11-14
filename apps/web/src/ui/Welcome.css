@@ -1,0 +1,131 @@
+/* The welcome (A3): a native modal dialog on the neumorphic material, over
+   a soft veil of the page colour (no blur, D72). */
+
+.welcome {
+  width: min(calc(100% - var(--gutter-mobile) * 2), var(--toast-width));
+  max-height: calc(100dvh - var(--gutter-mobile) * 2);
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  color: var(--ink);
+  background: var(--neu-base);
+  border: 0;
+  border-radius: var(--radius-float);
+  box-shadow: var(--elev-float);
+}
+
+.welcome::backdrop {
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+
+.welcome[open] {
+  display: grid;
+  gap: var(--space-6);
+  animation: welcome-in var(--duration-panel) var(--ease-out);
+}
+
+@keyframes welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-4) * var(--motion-scale)));
+  }
+}
+
+.welcome-step {
+  display: grid;
+  gap: var(--space-4);
+  min-height: calc(var(--space-16) * 3);
+}
+
+/* The display face only at display sizes (D80). */
+.welcome-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-heading);
+}
+
+.welcome-text,
+.welcome-status {
+  margin: 0;
+}
+
+.welcome-tries {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding-inline-start: var(--space-6);
+}
+
+.welcome-soft {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.welcome-status {
+  font-weight: var(--weight-medium);
+}
+
+.welcome-legend {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.welcome-legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Small replicas of what the scene shows (decorative; the text says it). */
+.welcome-mark,
+.welcome-asleep {
+  flex: none;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin: var(--space-1);
+  border-radius: var(--radius-pill);
+}
+
+.welcome-mark {
+  background: var(--neu-base);
+  box-shadow:
+    var(--elev-float),
+    inset 0 0 0 1px var(--warm-ink);
+}
+
+.welcome-asleep {
+  background: var(--surface-disabled);
+}
+
+.welcome-progress {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.welcome-dot {
+  width: var(--space-2);
+  height: var(--space-2);
+  background: var(--surface-disabled);
+  border-radius: var(--radius-pill);
+}
+
+.welcome-dot[data-current='true'] {
+  background: var(--accent);
+}
+
+.welcome-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.welcome-nav {
+  display: flex;
+  gap: var(--space-3);
+}

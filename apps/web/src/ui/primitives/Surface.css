@@ -1,0 +1,37 @@
+/* Neumorphic surfaces (D72). Same colour as their surroundings; only the
+   light and shadow (top left → bottom right) say raised or sunken. */
+
+.ui-surface {
+  color: var(--ink);
+  background: var(--neu-base);
+  border-radius: var(--radius-card);
+}
+
+.ui-surface[data-elevation='float'] {
+  border-radius: var(--radius-float);
+  box-shadow: var(--elev-float);
+}
+
+.ui-surface[data-elevation='raised-sm'] {
+  box-shadow: var(--elev-raised-sm);
+}
+
+.ui-surface[data-elevation='raised-md'] {
+  box-shadow: var(--elev-raised-md);
+}
+
+.ui-surface[data-elevation='inset-sm'] {
+  box-shadow: var(--elev-inset-sm);
+}
+
+.ui-surface[data-elevation='inset-md'] {
+  box-shadow: var(--elev-inset-md);
+}
+
+.ui-surface[data-padding='md'] {
+  padding: var(--space-4);
+}
+
+.ui-surface[data-padding='lg'] {
+  padding: var(--space-6);
+}

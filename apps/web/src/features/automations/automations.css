@@ -1,0 +1,58 @@
+/* Automations (A6, D89): forms on the sheets, flat like the settings pages. */
+.automation-form,
+.automation-fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.automation-form > .ui-button {
+  justify-self: start;
+}
+
+/* The plant's threshold (D100), with what it means right under it. */
+.automation-threshold {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.automation-pair {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.automation-choice {
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
+}
+
+.automation-label {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* The state of a change: calm while pending, the accent once applied, warm if refused. */
+.config-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.config-status[data-tone='applied'] {
+  color: var(--ink);
+}
+
+/* The accent is a mark, not text (too light for small text, WCAG AA). */
+.config-status[data-tone='applied'] .ui-icon {
+  color: var(--accent);
+}
+
+.config-status[data-tone='pending'] {
+  color: var(--ink-soft);
+}
+
+/* Inside an Ajustes section (which aligns to the start), the fields take the width. */
+.settings-section > .automation-fields,
+.settings-section > .ui-toggle {
+  width: 100%;
+}

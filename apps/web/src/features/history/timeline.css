@@ -1,0 +1,116 @@
+/* The rewind bar (A5, D88): in the dock's place, same width and float. */
+.timeline {
+  position: fixed;
+  inset-block-end: var(--gutter-mobile);
+  inset-inline: var(--gutter-mobile);
+  display: grid;
+  gap: var(--space-3);
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius-float);
+  animation: panel-in var(--duration-panel) var(--ease-out);
+}
+
+.timeline-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.timeline-when {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  min-width: 0;
+}
+
+/* The instant, always in words: unmistakably the past. */
+.timeline-moment {
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+}
+
+.timeline-track {
+  position: relative;
+  height: var(--target-min);
+}
+
+/* The groove (the input's track) holds the coverage: where there are
+   readings, and gaps. */
+.timeline-track .timeline-coverage {
+  position: absolute;
+  inset: calc((var(--target-min) - var(--space-4)) / 2) 0;
+  width: 100%;
+  height: var(--space-4);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-inset-sm);
+  background: var(--chart-gap);
+  overflow: hidden;
+}
+
+.timeline-track .timeline-data {
+  fill: color-mix(in srgb, var(--water) 55%, var(--neu-base));
+}
+
+.timeline-input {
+  position: relative;
+  width: 100%;
+  height: var(--target-min);
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.timeline-input::-webkit-slider-runnable-track {
+  height: var(--space-4);
+  background: transparent;
+}
+
+.timeline-input::-moz-range-track {
+  height: var(--space-4);
+  background: transparent;
+}
+
+.timeline-input::-webkit-slider-thumb {
+  width: var(--space-2);
+  height: var(--space-10);
+  margin-block-start: calc((var(--space-4) - var(--space-10)) / 2);
+  background: var(--water-ink);
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+  appearance: none;
+}
+
+.timeline-input::-moz-range-thumb {
+  width: var(--space-2);
+  height: var(--space-10);
+  background: var(--water-ink);
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-sm);
+}
+
+.timeline-input:focus-visible {
+  border-radius: var(--radius-pill);
+  outline-offset: var(--space-1);
+}
+
+.timeline-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.timeline-note {
+  margin: 0;
+  min-height: calc(var(--text-14) * 1.5);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}

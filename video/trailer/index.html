@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      /* The trailer of Vitreo, third cut: calm. The app fills the frame and
+         the film goes from function to function in one slow flight, with
+         nothing that jumps; words are small labels, never panels. Then the
+         same app on a phone, the notebook and the closing card. Colours and
+         faces are the app's own (apps/web/src/styles/tokens.css); sizes are
+         in --u, a hundredth of the frame's height. The moments are those of
+         apps/web/scripts/trailer-footage.mjs (its T, plus the 2.5 s of the
+         title) and of make-soundtrack.mjs (a bar is 2.5 s). */
+      @font-face {
+        font-family: 'Young Serif';
+        src: url('assets/young-serif-400.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Schibsted Grotesk';
+        font-weight: 400 900;
+        src: url('assets/schibsted-grotesk.woff2') format('woff2');
+      }
+      :root {
+        --page: #faf9f6;
+        --card: #f1ece3;
+        --ink: #1e2320;
+        --ink-soft: #5e655f;
+        --leaf: #3f6b3a;
+        --clay: #a85f35;
+        --night: #161a22;
+        --u: 10.8px;
+        --display: 'Young Serif', serif;
+        --sans: 'Schibsted Grotesk', system-ui, sans-serif;
+        --shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3.2) rgba(60, 50, 40, 0.22);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--page);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: var(--sans);
+        color: var(--ink);
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .letters {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: bottom;
+        padding-bottom: 0.12em;
+      }
+      .letters > span {
+        display: inline-block;
+      }
+
+      /* Footage sits in frames of its own: a clip may not be timed inside
+         another timed element. */
+      .frame {
+        position: absolute;
+        overflow: hidden;
+      }
+      #f-main {
+        inset: 0;
+      }
+      #f-note {
+        inset: calc(var(--u) * 11) calc(var(--u) * 12) calc(var(--u) * 15);
+        border-radius: calc(var(--u) * 2.4);
+        box-shadow: 0 calc(var(--u) * 3) calc(var(--u) * 9) rgba(60, 50, 40, 0.3);
+        opacity: 0;
+      }
+      #f-end {
+        inset: calc(var(--u) * 10) calc(var(--u) * 8) calc(var(--u) * 10) 54%;
+        border-radius: calc(var(--u) * 3);
+        box-shadow: 0 calc(var(--u) * 3) calc(var(--u) * 9) rgba(22, 26, 34, 0.35);
+        opacity: 0;
+      }
+
+      /* ── The title: small, and gone in two seconds ───────────────── */
+      #title {
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: calc(var(--u) * 1.6);
+        background: var(--page);
+      }
+      #name {
+        font-family: var(--display);
+        font-size: calc(var(--u) * 13);
+        line-height: 1;
+      }
+      #what {
+        font-size: calc(var(--u) * 3.6);
+        font-weight: 500;
+        color: var(--ink-soft);
+      }
+
+      /* ── Labels: one small line for what the film is showing ─────── */
+      .label {
+        position: absolute;
+        left: calc(var(--u) * 5);
+        bottom: calc(var(--u) * 5);
+        display: grid;
+        gap: calc(var(--u) * 0.3);
+        padding: calc(var(--u) * 1.5) calc(var(--u) * 2.4) calc(var(--u) * 1.6);
+        background: var(--card);
+        border-radius: calc(var(--u) * 1.8);
+        box-shadow: var(--shadow);
+        opacity: 0;
+      }
+      .label b {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--u) * 1);
+        font-size: calc(var(--u) * 3.1);
+        font-weight: 700;
+      }
+      .label b::before {
+        content: '';
+        width: calc(var(--u) * 1.1);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: var(--leaf);
+      }
+      .label span {
+        font-size: calc(var(--u) * 2.6);
+        font-weight: 500;
+        color: var(--ink-soft);
+      }
+
+      /* ── The phone ───────────────────────────────────────────────── */
+      #phone {
+        background: var(--page);
+        opacity: 0;
+      }
+      #f-phone {
+        top: calc(var(--u) * 6);
+        left: calc(50% - var(--u) * 20.33);
+        width: calc(var(--u) * 40.66);
+        height: calc(var(--u) * 88);
+        border: calc(var(--u) * 0.7) solid var(--ink);
+        border-radius: calc(var(--u) * 4.6);
+        box-shadow: 0 calc(var(--u) * 3) calc(var(--u) * 9) rgba(60, 50, 40, 0.3);
+        opacity: 0;
+      }
+      #phone-label {
+        left: calc(50% + var(--u) * 26);
+        bottom: auto;
+        top: calc(50% - var(--u) * 4);
+      }
+
+      /* ── The notebook ────────────────────────────────────────────── */
+      #note {
+        background: var(--page);
+        opacity: 0;
+      }
+      #facts {
+        position: absolute;
+        inset: auto 0 calc(var(--u) * 5.5) 0;
+        display: flex;
+        justify-content: center;
+        gap: calc(var(--u) * 5);
+        font-size: calc(var(--u) * 2.9);
+        font-weight: 500;
+        color: var(--ink-soft);
+      }
+      #facts b {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: calc(var(--u) * 4.2);
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ── The end ─────────────────────────────────────────────────── */
+      #end {
+        background: var(--night);
+        color: var(--page);
+      }
+      #end .text {
+        position: absolute;
+        inset: 0 48% 0 calc(var(--u) * 8);
+        display: grid;
+        align-content: center;
+        justify-items: start;
+        gap: calc(var(--u) * 2.4);
+      }
+      #end .name {
+        font-family: var(--display);
+        font-size: calc(var(--u) * 9);
+        line-height: 1;
+      }
+      #end h2 {
+        font-size: calc(var(--u) * 3.4);
+        font-weight: 500;
+        line-height: 1.35;
+        color: #c9cdd3;
+      }
+      #stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(var(--u) * 1);
+      }
+      #stack span {
+        padding: calc(var(--u) * 0.6) calc(var(--u) * 1.5);
+        font-size: calc(var(--u) * 2.6);
+        font-weight: 600;
+        border-radius: 999px;
+        box-shadow: inset 0 0 0 1px rgba(236, 232, 225, 0.3);
+      }
+      #url {
+        margin-top: calc(var(--u) * 1);
+        font-size: calc(var(--u) * 3.6);
+        font-weight: 700;
+        color: #ffd9a8;
+      }
+      #end small {
+        font-size: calc(var(--u) * 2.6);
+        color: #a6abb3;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="48.5"
+      data-width="1920"
+      data-height="1080"
+    >
+      <audio
+        id="music"
+        src="assets/soundtrack.wav"
+        data-start="0"
+        data-duration="48.5"
+        data-volume="1"
+        data-track-index="9"
+      ></audio>
+
+      <!-- 2.5 – 32.5 · The flight through the app, full frame (half a second more, under the next scene) -->
+      <div class="frame" id="f-main">
+        <video
+          id="v-main"
+          muted
+          playsinline
+          src="assets/footage.mp4"
+          data-start="2.5"
+          data-duration="30.5"
+          data-media-start="0"
+        ></video>
+      </div>
+      <div class="clip" id="overlays" data-start="2.5" data-duration="30" data-track-index="2">
+        <div id="labels"></div>
+      </div>
+
+      <!-- 0 – 3 · The title, fading over the first of the flight -->
+      <section id="title" class="clip" data-start="0" data-duration="3" data-track-index="0">
+        <h1 id="name" data-split>Vitreo</h1>
+        <p id="what">El gemelo digital de un huerto doméstico.</p>
+      </section>
+
+      <!-- 32.5 – 37.5 · The same app on a phone -->
+      <section id="phone" class="clip" data-start="32.5" data-duration="5.5" data-track-index="0">
+        <div class="label" id="phone-label">
+          <b>En el móvil</b><span>la misma app, instalable como PWA</span>
+        </div>
+      </section>
+      <div class="frame" id="f-phone">
+        <video
+          id="v-phone"
+          muted
+          playsinline
+          src="assets/phone.mp4"
+          data-start="32.5"
+          data-duration="5.5"
+          data-media-start="0"
+        ></video>
+      </div>
+
+      <!-- 37.5 – 42.5 · The notebook -->
+      <section id="note" class="clip" data-start="37.5" data-duration="5" data-track-index="0">
+        <div id="facts">
+          <span><b data-count="135">0</b> decisiones documentadas</span>
+          <span><b data-count="1000" data-prefix="+">0</b> pruebas automáticas</span>
+          <span><b data-count="60">0</b> fps medidos</span>
+        </div>
+      </section>
+      <div class="frame" id="f-note">
+        <video
+          id="v-note"
+          muted
+          playsinline
+          src="assets/notebook.mp4"
+          data-start="37.5"
+          data-duration="5"
+          data-media-start="0.9"
+        ></video>
+      </div>
+      <div class="label" id="note-label" style="left: 50%; bottom: auto; top: calc(var(--u) * 1.2)">
+        <b>Cuaderno de decisiones</b><span>cada decisión, con su porqué</span>
+      </div>
+
+      <!-- 42.5 – 48.5 · The end -->
+      <section id="end" class="clip" data-start="42.5" data-duration="6" data-track-index="0">
+        <div class="text">
+          <div class="name" data-split>Vitreo</div>
+          <h2 id="end-line">
+            Firmware, protocolo, servidor, PWA<br />y modelo 3D: un sistema completo.
+          </h2>
+          <div id="stack">
+            <span>TypeScript</span><span>React Three Fiber</span><span>Blender</span
+            ><span>MQTT</span><span>ESP32</span><span>SQLite</span><span>Playwright</span>
+          </div>
+          <div id="url">vitreo-demo.vercel.app</div>
+          <small id="fine">Demo pública con datos simulados</small>
+        </div>
+      </section>
+      <div class="frame" id="f-end">
+        <video
+          id="v-end"
+          muted
+          playsinline
+          src="assets/footage.mp4"
+          data-start="42.5"
+          data-duration="6"
+          data-media-start="30"
+        ></video>
+      </div>
+    </div>
+    <script>
+      // Words marked data-split become letters that rise out of a mask.
+      for (const el of document.querySelectorAll('[data-split]')) {
+        const text = el.textContent;
+        el.textContent = '';
+        el.classList.add('letters');
+        for (const letter of text) {
+          const span = document.createElement('span');
+          span.textContent = letter;
+          el.append(span);
+        }
+      }
+      const letters = (id) => document.querySelectorAll(id + ' > span');
+
+      // What the film shows, when (film seconds), in a line each.
+      const LABELS = [
+        [3.0, 5.3, 'Escena 3D en tiempo real', 'React Three Fiber · modelo propio en Blender'],
+        [5.5, 8.2, 'Luz de cultivo', 'un relé; la escena se enciende con el dato'],
+        [8.5, 12.2, 'Ventilador y ventana', 'cada actuador, con su estado real'],
+        [12.9, 16.2, 'Riego por maceta', 'bomba con límites de seguridad en el firmware'],
+        [16.6, 20.0, 'Historial', '30 días en SQLite, rebobinables'],
+        [21.0, 23.4, 'Depósito', 'nivel medido: sin dato, no se inventa'],
+        [24.0, 27.4, 'Tiempo exterior', 'si llueve, la ventana se cierra sola'],
+        [27.8, 30.0, 'Día y noche', 'sigue al sol real de tu ubicación'],
+        [30.3, 32.3, 'Iluminación horneada', 'lightmaps de Blender: 60 fps medidos'],
+      ];
+      const labels = document.getElementById('labels');
+      const tl = gsap.timeline({ paused: true });
+      for (const [from, to, name, detail] of LABELS) {
+        const el = document.createElement('div');
+        el.className = 'label';
+        const b = document.createElement('b');
+        b.textContent = name;
+        const span = document.createElement('span');
+        span.textContent = detail;
+        el.append(b, span);
+        labels.append(el);
+        tl.fromTo(
+          el,
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+          from,
+        );
+        tl.to(el, { opacity: 0, duration: 0.35, ease: 'power1.in' }, to - 0.35);
+      }
+
+      // ── 0 – 3 · The title, which fades over the flight already under way ──
+      tl.fromTo(
+        letters('#name'),
+        { yPercent: 115 },
+        { yPercent: 0, duration: 0.7, ease: 'power3.out', stagger: 0.05 },
+        0.2,
+      );
+      tl.fromTo(
+        '#what',
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+        0.5,
+      );
+      tl.to('#title', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 2.5);
+
+      // ── 32.5 – 37.5 · The phone, fading in over the night ──
+      tl.to('#phone', { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 32.5);
+      tl.fromTo(
+        '#f-phone',
+        { opacity: 0, yPercent: 5 },
+        { opacity: 1, yPercent: 0, duration: 0.7, ease: 'power3.out' },
+        32.6,
+      );
+      tl.fromTo(
+        '#phone-label',
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+        33.2,
+      );
+      tl.to('#f-phone, #phone-label', { opacity: 0, duration: 0.4, ease: 'power1.in' }, 37.1);
+      tl.to('#note', { opacity: 1, duration: 0.4, ease: 'power1.inOut' }, 37.5);
+
+      // ── 37.5 – 42.5 · The notebook ──
+      tl.fromTo(
+        '#f-note',
+        { opacity: 0, yPercent: 8, scale: 0.96 },
+        { opacity: 1, yPercent: 0, scale: 1, duration: 0.7, ease: 'power3.out' },
+        37.5,
+      );
+      tl.to('#f-note', { scale: 1.03, duration: 4, ease: 'none' }, 38.3);
+      tl.fromTo(
+        '#note-label',
+        { opacity: 0, y: 28, xPercent: -50 },
+        { opacity: 1, y: 0, xPercent: -50, duration: 0.3, ease: 'back.out(2)' },
+        37.8,
+      );
+      for (const [i, number] of [...document.querySelectorAll('#facts b')].entries()) {
+        const goal = Number(number.dataset.count);
+        const prefix = number.dataset.prefix ?? '';
+        const counter = { value: 0 };
+        tl.fromTo(
+          number.parentElement,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' },
+          38 + i * 0.25,
+        );
+        tl.to(
+          counter,
+          {
+            value: goal,
+            duration: 0.6,
+            ease: 'power2.out',
+            onUpdate: () => {
+              number.textContent =
+                prefix + String(Math.round(counter.value)).replace(/\B(?=(\d{3})+$)/g, '.');
+            },
+          },
+          38 + i * 0.25,
+        );
+      }
+      tl.to('#f-note, #note-label', { opacity: 0, duration: 0.2, ease: 'power2.in' }, 42.3);
+
+      // ── 42.5 – 48.5 · The end ──
+      tl.fromTo(
+        '#f-end',
+        { opacity: 0, xPercent: 16 },
+        { opacity: 1, xPercent: 0, duration: 0.7, ease: 'power4.out' },
+        42.55,
+      );
+      tl.fromTo(
+        letters('#end .name'),
+        { yPercent: 115 },
+        { yPercent: 0, duration: 0.45, ease: 'back.out(1.8)', stagger: 0.035 },
+        42.6,
+      );
+      tl.fromTo(
+        '#end-line',
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' },
+        43,
+      );
+      tl.fromTo(
+        '#stack span',
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out', stagger: 0.06 },
+        43.3,
+      );
+      tl.fromTo(
+        '#url',
+        { opacity: 0, x: -24 },
+        { opacity: 1, x: 0, duration: 0.4, ease: 'power3.out' },
+        44,
+      );
+      tl.fromTo('#fine', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 44.3);
+      tl.to('#end, #f-end', { opacity: 0, duration: 0.8, ease: 'power2.in' }, 47.7);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines['main'] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

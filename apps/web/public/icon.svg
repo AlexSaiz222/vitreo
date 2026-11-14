@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vitreo icon. Colours copied from tokens.css (bg, ink-soft, gravel, leaves). -->
+  <!-- Content stays inside the maskable safe zone (a centred circle of radius 205). -->
+  <rect width="512" height="512" fill="#faf9f6"/>
+  <rect x="128" y="360" width="256" height="20" rx="8" fill="#e7dfd0"/>
+  <path d="M256 352 V292" stroke="#4f7a4a" stroke-width="8" stroke-linecap="round"/>
+  <path d="M256 304 C230 300 216 280 218 260 C242 262 256 280 256 304 Z" fill="#7fa46b"/>
+  <path d="M256 318 C282 314 298 294 296 272 C272 274 256 294 256 318 Z" fill="#4f7a4a"/>
+  <g fill="none" stroke="#5e655f" stroke-width="10" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M156 360 V246 L256 166 L356 246 V360"/>
+    <path d="M156 246 H356"/>
+    <path d="M206 206 V360"/>
+    <path d="M306 206 V360"/>
+  </g>
+</svg>

@@ -1,0 +1,1008 @@
+/* The HUD over the 3D scene, built from the primitives (D72). Floating
+   pieces are opaque with a drop shadow; raised and inset live inside them. */
+
+.hud-label {
+  margin: 0;
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* A lone button over the canvas floats like a panel (no neumorphic light
+   on top of the 3D, which is not the same material). */
+.hud-floating {
+  box-shadow: var(--elev-float-sm);
+}
+
+.hud-floating:active:not(:disabled) {
+  box-shadow: var(--elev-pressed);
+}
+
+/* Under the pointer (D131): it floats a little higher, rather than taking
+   the raised shadow of the buttons inside the panels. */
+@media (hover: hover) and (pointer: fine) {
+  .hud-floating.hud-floating:hover:not(:disabled, [aria-disabled='true'], :active) {
+    box-shadow: var(--elev-float-hover);
+  }
+}
+
+/* ── Top: title and status straight over the scene (D81) ─────────── */
+
+/* No card: a soft gradient of the page colour keeps the text readable over
+   whatever the camera puts behind it (beams, glass, sky), day and night. */
+.hud-scrim {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: calc(var(--space-16) * 2.5);
+  /* The page as the scene draws it right now (--page-now, D135): through
+     twilight it is neither theme's --bg, and a veil of the wrong one showed
+     as a band across the top. */
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--page-now, var(--bg)) 94%, transparent) 0%,
+    color-mix(in srgb, var(--page-now, var(--bg)) 86%, transparent) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Words written straight on the page (the title and the status line, the
+   demo's label) take the ink that reads on the page as it is right now
+   (data-page-tone, set by the scene; D135). Through twilight the page is
+   between the two themes: on a timer, the title spent a moment dark on dark
+   or light on light. Without the scene there is no attribute and the
+   theme's own ink applies. */
+:root[data-page-tone='light'] :is(.status, .demo-label) {
+  --ink: var(--ink-on-light);
+  --ink-soft: var(--ink-soft-on-light);
+}
+
+:root[data-page-tone='dark'] :is(.status, .demo-label) {
+  --ink: var(--ink-on-dark);
+  --ink-soft: var(--ink-soft-on-dark);
+}
+
+:root[data-theme-changing] :is(.status, .demo-label),
+:root[data-theme-changing] :is(.status, .demo-label) * {
+  transition-delay: 0s !important;
+}
+
+/* Title and status, the round buttons, and the notices below them: one
+   column, so the notices never cover the header (A2). */
+.hud-top {
+  position: fixed;
+  inset-block-start: var(--gutter-mobile);
+  inset-inline: var(--gutter-mobile);
+  display: grid;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.hud-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.hud-top-row > * {
+  pointer-events: auto;
+}
+
+.hud-controls {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: end;
+}
+
+/* The round icons stand on their own at the right (D115; on every screen
+   since D128, with three of them), so what comes under the title (the
+   demo's line, the notices) sits right under it instead of below the
+   column of icons. Below a desktop, that keeps clear of the column. */
+.hud-top-row {
+  position: relative;
+}
+
+.hud-controls {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+}
+
+.hud-top-row > .status {
+  padding-inline-end: calc(var(--target-min) + var(--space-3) * 2);
+}
+
+@media (max-width: 63.99rem) {
+  .hud-top > :not(.hud-top-row) {
+    margin-inline-end: calc(var(--target-min) + var(--space-3) * 2);
+  }
+}
+
+.hud-top .ui-toast-stack {
+  position: static;
+  justify-items: start;
+}
+
+.alert-more {
+  margin: 0;
+  padding-inline-start: var(--space-4);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.status {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+/* The display face only at display sizes (D80). */
+.status-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-heading);
+}
+
+.status-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* The readings open the greenhouse sheet (A11): text over the scene as
+   before (no card, D81), with a target of at least 44 px and a focus ring. */
+.status-readings {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-height: var(--target-min);
+  margin-block: calc((var(--target-min) - var(--text-14) * 1.5) / -2);
+  padding: 0 var(--space-1);
+  margin-inline: calc(var(--space-1) * -1);
+  border: 0;
+  border-radius: var(--radius-button);
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* On a phone the readings can take two lines, and then the margins above
+   (made for one) would pull the title and the phrase on top of them. */
+@media (max-width: 30rem) {
+  .status-readings {
+    margin-block: 0;
+  }
+}
+
+.status-readings:hover .status-reading {
+  color: var(--ink);
+}
+
+/* While waiting for the first data (D116): one quiet sentence under the line. */
+.status-note {
+  max-width: var(--toast-width);
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.status-reading,
+.status-phrase {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.status-reading {
+  font-variant-numeric: tabular-nums;
+}
+
+.status-reading .ui-icon {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+/* "dentro" and "fuera" (A10): the outdoor reading is never taken for the greenhouse's. */
+.status-where {
+  font-size: var(--text-12);
+}
+
+.status-phrase {
+  color: var(--ink);
+}
+
+/* Rewound (A5): the past, in water ink with the clock-back icon. */
+.status-past {
+  color: var(--water-ink);
+}
+
+/* A hint of the state; the sentence next to it always says it in words. */
+.status-dot {
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+.status-dot[data-tone='attention'] {
+  background: var(--warm-ink);
+}
+
+.status-dot[data-tone='idle'] {
+  background: var(--ink-soft);
+}
+
+.settings-button,
+.greenhouse-button,
+.home-button {
+  flex: none;
+}
+
+/* ── Without 3D: the plants in a list (A3, D86) ─────────────────────── */
+
+.plant-list {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: var(--space-3);
+  /* Below whatever the top holds now (the title, the demo's line, the
+     notices) and below the column of round icons, whichever is lower. */
+  padding: calc(
+      max(
+          var(--hud-top-height, var(--space-16) * 2.5),
+          (var(--target-min) + var(--space-3)) * 3 + var(--space-3) * 2
+        ) +
+        var(--space-8)
+    )
+    var(--gutter-mobile) calc(var(--space-16) * 2.75);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
+}
+
+.plant-list > * {
+  width: min(100%, var(--toast-width));
+}
+
+.plant-list-note {
+  margin: 0;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.plant-list-items {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── Ajustes (A3) ───────────────────────────────────────────────────── */
+
+.settings-section {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+}
+
+.settings-section .plant-facts {
+  width: 100%;
+}
+
+.settings-hint {
+  margin: 0;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* Something waits for the hub, or a save failed: said in the warm tone. */
+.settings-hint[data-tone='attention'] {
+  color: var(--warm-ink);
+}
+
+/* The status line under Guardar keeps its space, so nothing jumps. */
+.settings-hint[role='status'] {
+  min-height: calc(var(--text-14) * 1.5);
+}
+
+/* Ajustes › Plantas, › Ubicación (A4). */
+.settings-page {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.settings-page > .ui-button {
+  justify-self: start;
+}
+
+.settings-list {
+  display: grid;
+  gap: var(--space-3);
+  width: 100%;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+}
+
+.settings-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* ── Plant labels and warnings (A2, D83) ───────────────────────────── */
+
+/* Positioned every frame from the scene (transforms only); pointer input
+   goes through to the 3D scene except on warnings, which can be tapped. */
+.plant-anchors {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.plant-marker,
+.plant-leader,
+.plant-target {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+/* Quiet: small, on its own opaque surface, readable over any background. */
+.plant-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--space-8);
+  padding: 0 var(--space-3);
+  font: inherit;
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  white-space: nowrap;
+  background: var(--neu-base);
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-float);
+  pointer-events: none;
+  animation: marker-in calc(var(--duration-micro) * 2) var(--ease-out);
+}
+
+@keyframes marker-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.plant-marker[data-placed='false'] {
+  visibility: hidden;
+}
+
+.plant-marker .ui-icon {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+/* A warning at rest is just the warm mark, a quiet dot over the plant; the
+   words join it when they help (pointer, focus, zoomed in, edge). */
+.plant-marker[data-kind='warning'][data-expanded='false']:not([data-mode='edge']) {
+  justify-content: center;
+  width: var(--space-6);
+  min-height: var(--space-6);
+  padding: 0;
+}
+
+.plant-marker[data-kind='warning'][data-expanded='false']:not([data-mode='edge'])
+  .plant-marker-text {
+  display: none;
+}
+
+.plant-marker-detail {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A warning: warm edge and mark (a tap on it opens the plant). */
+.plant-marker[data-kind='warning'] {
+  box-shadow:
+    var(--elev-float),
+    inset 0 0 0 1px var(--warm-ink);
+}
+
+.plant-marker[data-kind='warning'] > .ui-icon {
+  color: var(--warm-ink);
+}
+
+/* The name joins the warning when it helps: hover, focus, zoomed in, edge. */
+.plant-marker-name {
+  display: none;
+}
+
+.plant-marker[data-mode='edge'] .plant-marker-name,
+.plant-marker[data-expanded='true'] .plant-marker-name {
+  display: inline;
+}
+
+/* Behind another plant: no lift, a dashed edge (still readable). */
+.plant-marker[data-occluded='true'] {
+  box-shadow: inset 0 0 0 1px var(--ink-soft);
+  outline: 1px dashed var(--warm-ink);
+  outline-offset: calc(var(--space-1) * -0.5);
+}
+
+/* Off screen: an arrow points to the plant (a tap takes you there). */
+.plant-marker-arrow {
+  display: none;
+  color: var(--ink-soft);
+}
+
+.plant-marker[data-mode='edge'] .plant-marker-arrow {
+  display: inline-grid;
+}
+
+.plant-leader {
+  height: 1px;
+  background: var(--ink-soft);
+  transform-origin: 0 50%;
+}
+
+.plant-leader[data-placed='false'] {
+  display: none;
+}
+
+/* Keyboard only: invisible to the pointer, a 44 px ring with focus. */
+.plant-target {
+  width: var(--target-min);
+  height: var(--target-min);
+  margin: calc(var(--target-min) / -2) 0 0 calc(var(--target-min) / -2);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+}
+
+.plant-target:focus-visible {
+  outline-offset: 0;
+}
+
+/* ── Shortcuts ──────────────────────────────────────────────────────── */
+
+.shortcut-list {
+  display: grid;
+  margin: 0;
+}
+
+.shortcut {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+}
+
+.shortcut + .shortcut {
+  border-block-start: 1px solid var(--line);
+}
+
+.shortcut dd {
+  margin: 0;
+  font-size: var(--text-14);
+}
+
+kbd {
+  font: inherit;
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+}
+
+/* ── Dock ────────────────────────────────────────────────────────── */
+
+.dock {
+  position: fixed;
+  inset-block-end: var(--gutter-mobile);
+  inset-inline: var(--gutter-mobile);
+  /* A menu never climbs over the title: it scrolls instead (a short phone). */
+  max-height: calc(100dvh - var(--gutter-mobile) - var(--space-16) * 1.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.dock > * {
+  flex: none;
+  pointer-events: auto;
+}
+
+.dock-bar {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-float);
+}
+
+/* The tank, always in view: the same drop as the plants (A2). */
+.dock-tank {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--target-min);
+  margin: 0;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-button);
+  background: none;
+  font: inherit;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.dock-tank:hover {
+  color: var(--ink);
+}
+
+.dock-tank .ui-moisture-drop {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+.dock-tank[data-low='true'] {
+  color: var(--ink);
+}
+
+.dock-reason {
+  margin: 0;
+  padding: var(--space-1) var(--space-3) 0;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.dock-buttons {
+  display: flex;
+  /* With text at 200 % the three no longer fit a phone: a second row (A12). */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dock-buttons .ui-button {
+  min-width: calc(var(--target-min) * 2);
+  min-height: calc(var(--target-min) + var(--space-2));
+  padding: 0 var(--space-5);
+}
+
+/* A button that can be on keeps room for its dot, on or off: switching it
+   never resizes the bar. */
+.dock-buttons .ui-button[aria-pressed] {
+  padding-inline-start: calc(var(--space-6) + var(--space-1));
+}
+
+/* A phone (D124): the three side by side, icon over label, instead of two
+   rows of pills that took a quarter of the screen. With large text they
+   stack again: the columns are measured in rem. */
+@media (max-width: 30rem) {
+  .dock-bar {
+    width: 100%;
+  }
+
+  .dock-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.5rem), 1fr));
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .dock-buttons li {
+    display: grid;
+  }
+
+  .dock-buttons .ui-button,
+  .dock-buttons .ui-button[aria-pressed] {
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+    padding: var(--space-2) var(--space-1);
+    border-radius: var(--radius-button);
+  }
+
+  .dock-buttons .ui-button[aria-pressed]::before {
+    inset-block-start: var(--space-3);
+    margin-block-start: 0;
+  }
+}
+
+/* Zoomed in on a phone (D134): the dock folds to one slim row, icon beside
+   its name, so it covers less of the greenhouse. The tank stays if it is low
+   (news, not noise); the light keeps its dot. Folded pieces stay in the page:
+   still read aloud, still reached. */
+@media (max-width: 30rem) {
+  .dock[data-folded='true'] .dock-bar {
+    gap: 0;
+    padding: var(--space-2);
+  }
+
+  .dock[data-folded='true'] .dock-buttons .ui-button,
+  .dock[data-folded='true'] .dock-buttons .ui-button[aria-pressed] {
+    flex-direction: row;
+    gap: var(--space-2);
+    min-height: var(--target-min);
+    padding: 0 var(--space-2);
+  }
+
+  .dock[data-folded='true'] .dock-buttons .ui-button[aria-pressed]::before {
+    inset-block-start: 50%;
+    inset-inline-start: var(--space-2);
+    margin-block-start: calc(var(--space-1) * -1);
+  }
+
+  .dock[data-folded='true'] :is(.ui-button-detail, .dock-tank:not([data-low='true'])) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    padding: 0;
+    overflow: clip;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* A desktop with a mouse (D115, D127): the greenhouse is the picture, the
+   dock a quiet row of three named buttons (with icons alone, whoever arrives
+   for the first time has to guess). The light's state and the tank open when
+   the pointer comes to the dock or the keyboard reaches it, and stay open
+   while one of its menus is. A low or empty tank stays in view: that is
+   news, not noise. Folded pieces stay in the page, so they are still read
+   and Tab still reaches them. */
+@media (min-width: 64rem) and (hover: hover) and (pointer: fine) {
+  /* The frame keeps its margins, open or folded: only the details come and
+     go, in a short fade once their room has opened, so nothing jumps. */
+  .dock-bar {
+    gap: 0;
+    transition: gap calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+  }
+
+  .dock-buttons .ui-button,
+  .dock-buttons .ui-button[aria-pressed] {
+    min-width: 0;
+    min-height: var(--target-min);
+  }
+
+  .dock-buttons .ui-button-detail,
+  .dock-tank:not([data-low='true']) {
+    max-height: 0;
+    opacity: 0;
+    overflow: clip;
+    white-space: nowrap;
+    transition:
+      max-height calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+      opacity var(--duration-micro) var(--ease-out);
+  }
+
+  /* Folded, the light's state takes no width either: "Luz" is as wide as its word. */
+  .dock-buttons .ui-button-detail {
+    max-width: 0;
+    transition:
+      max-width calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+      max-height calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+      opacity var(--duration-micro) var(--ease-out);
+  }
+
+  .dock-tank:not([data-low='true']) {
+    min-height: 0;
+    transition:
+      max-height calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+      min-height calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out),
+      opacity var(--duration-micro) var(--ease-out);
+  }
+
+  :is(.dock:hover, .dock:focus-within, .dock:has([aria-expanded='true'])) .dock-bar {
+    gap: var(--space-2);
+  }
+
+  :is(.dock:hover, .dock:focus-within, .dock:has([aria-expanded='true']))
+    .dock-buttons
+    .ui-button-detail {
+    max-width: calc(var(--menu-width) / 2);
+    max-height: calc(var(--text-12) * 2);
+    opacity: 1;
+    transition-delay: 0s, 0s, calc(var(--duration-micro) * var(--motion-scale));
+  }
+
+  :is(.dock:hover, .dock:focus-within, .dock:has([aria-expanded='true'])) .dock-tank {
+    max-height: calc(var(--target-min) * 2);
+    min-height: var(--target-min);
+    opacity: 1;
+    transition-delay: 0s, 0s, calc(var(--duration-micro) * var(--motion-scale));
+  }
+}
+
+/* The notebook in the demo (D113, D115): a link drawn as a round icon,
+   only on a computer with a mouse (D116); on a phone the page is still at
+   /cuaderno. */
+.notebook-button {
+  display: none;
+  text-decoration: none;
+}
+
+@media (min-width: 64rem) and (hover: hover) and (pointer: fine) {
+  .notebook-button {
+    display: inline-flex;
+  }
+}
+
+.dock > .dock-menu {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.dock-menu {
+  width: min(100%, var(--menu-width));
+  padding: var(--space-3);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
+  animation: panel-in var(--duration-panel) var(--ease-out);
+}
+
+/* Menus rise a few pixels as they fade in: there, not arriving. */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-2) * var(--motion-scale)));
+  }
+}
+
+.dock-menu-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+}
+
+/* Aire: a small popover just above its button (right end of the dock),
+   sized to its content, never covering the greenhouse more than needed. */
+.dock-popover {
+  position: absolute;
+  inset-block-end: calc(100% + var(--space-3));
+  inset-inline-end: 0;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  width: max-content;
+  max-width: calc(100vw - var(--gutter-mobile) * 2);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  animation: panel-in var(--duration-panel) var(--ease-out);
+}
+
+.dock-popover > .hud-label:not(:first-child) {
+  margin-block-start: var(--space-2);
+}
+
+/* A live reading inside running text (a list row's "56 % · está bien"):
+   tabular figures, so it does not jitter as it changes (D82). Static text
+   keeps proportional figures: this font's tabular set also widens the
+   colon and the comma. */
+.reading {
+  font-variant-numeric: tabular-nums;
+}
+
+.menu-status {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  animation: status-in calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+}
+
+@keyframes status-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* An explanation, not a counter: proportional figures, so the font's tabular
+   punctuation does not open gaps around ":" and "," (A10). */
+.menu-status[data-prose] {
+  font-variant-numeric: normal;
+}
+
+/* A safety limit holding a control (frost, D90): said in the warm tone. */
+.menu-status[data-tone='attention'] {
+  color: var(--warm-ink);
+}
+
+/* ── Plant detail sheet ──────────────────────────────────────────── */
+
+.plant-reading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Beside the dial; below it when the text is large (200 %, A12). */
+.plant-reading-text {
+  display: grid;
+  flex: 1 1 calc(var(--text-14) * 13);
+  gap: var(--space-1);
+}
+
+.plant-mood {
+  margin: 0;
+  font-size: var(--text-20);
+}
+
+.plant-mood[data-thirsty='true'],
+.plant-honesty {
+  color: var(--warm-ink);
+}
+
+/* Rewound (A5): the past is not a warning. */
+.plant-honesty[data-tone='past'] {
+  color: var(--water-ink);
+}
+
+.plant-honesty,
+.plant-hint,
+.plant-reason,
+.plant-empty {
+  margin: 0;
+  font-size: var(--text-14);
+}
+
+.plant-hint,
+.plant-reason,
+.plant-empty {
+  color: var(--ink-soft);
+}
+
+/* A refusal says which limit and until when (D85). */
+.plant-reason[data-tone='attention'] {
+  color: var(--warm-ink);
+}
+
+/* How long, then the button: two rows that keep their place while watering
+   (D128), so nothing under the finger moves. */
+.plant-actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.plant-water-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.plant-actions .primary-button {
+  flex: 1 1 auto;
+  isolation: isolate;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Watering: the button lies flat, still tinted with water (not the grey of
+   a disabled one), and the water rises along it for its seconds. The words
+   say it too: "Regando · 3 s". */
+.plant-actions .primary-button[data-watering='true']:disabled {
+  color: var(--water-ink);
+  background: var(--primary-fill);
+  box-shadow: none;
+}
+
+.water-fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--water-rising);
+  transform-origin: left center;
+  animation: water-rise linear forwards;
+}
+
+@keyframes water-rise {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Done: a check and "Regada" for a moment, then back to "Regar ahora". */
+.plant-actions .primary-button[data-done='true'] .ui-icon {
+  color: var(--accent-ink);
+}
+
+/* Plain rows on the sheet, split by a hairline (no well: inset is only for
+   pressed, selected or input, D81). */
+.plant-facts {
+  display: grid;
+  margin: 0;
+}
+
+.plant-fact {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+}
+
+.plant-fact + .plant-fact {
+  border-block-start: 1px solid var(--line);
+}
+
+.plant-fact dd {
+  margin: 0;
+  font-size: var(--text-14);
+  text-align: end;
+}
+
+.plant-section {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* One section ends and the next begins (D128): air and a hairline, so the
+   charts, forms and lists of a sheet never run into each other. */
+:is(.plant-section, .plant-facts, .settings-section) + :is(.plant-section, .settings-section) {
+  margin-block-start: var(--space-2);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--line);
+}
+
+@media (min-width: 48rem) {
+  .hud-scrim {
+    height: calc(var(--space-16) * 2.25);
+  }
+
+  .hud-top {
+    inset-block-start: var(--gutter-desktop);
+    inset-inline: var(--gutter-desktop);
+  }
+
+  .dock {
+    inset-block-end: var(--gutter-desktop);
+    inset-inline: var(--gutter-desktop);
+    max-height: calc(100dvh - var(--gutter-desktop) - var(--space-16) * 1.75);
+  }
+}
+
+/* A tablet with a sheet open: the status wraps instead of running under it. */
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .app-shell:has(.ui-sheet) :is(.status, .demo-bar) {
+    max-width: calc(100vw - var(--sheet-width) - var(--gutter-desktop) * 3);
+  }
+}

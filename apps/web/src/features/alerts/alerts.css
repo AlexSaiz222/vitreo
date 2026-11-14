@@ -1,0 +1,42 @@
+/* Ajustes › Avisos (A7, D91). */
+.alerts-actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.alerts-types {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.alerts-history {
+  display: grid;
+  gap: var(--space-3);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alerts-item {
+  display: grid;
+  gap: var(--space-1);
+  padding-block-end: var(--space-3);
+  border-block-end: 1px solid var(--line);
+}
+
+.alerts-item-title {
+  font-size: var(--text-16);
+}
+
+.alerts-item[data-open='true'][data-critical='true'] .alerts-item-title {
+  color: var(--warm-ink);
+}
+
+.alerts-item-body,
+.alerts-item-when {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}

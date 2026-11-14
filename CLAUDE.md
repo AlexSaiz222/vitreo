@@ -1,0 +1,59 @@
+# CLAUDE.md — Vitreo
+
+Contexto para Claude Code. Documentación completa en `docs/` (español). Leer el documento relevante antes de trabajar en un área.
+
+## Qué es
+
+Invernadero doméstico pequeño con gemelo digital 3D interactivo. Escena isométrica tipo diorama, estética de ilustración minimalista, fondo blanco, muy tranquila. La app muestra el estado real (aire, luz, tierra por maceta, depósito) y controla riego, luz de cultivo, ventilador y ventana. Proyecto personal, calidad de producto. Fase actual y siguiente: `docs/09-roadmap.md`.
+
+## Reglas
+
+- **IMPORTANTE — Seguridad del hardware en firmware**: límites de bomba, depósito vacío, corte por temperatura, estado seguro al arrancar y al perder conexión. No eliminar ni relajar estos límites salvo petición explícita; si una tarea parece requerirlo, parar y preguntar.
+- **IMPORTANTE — Honestidad de datos**: nunca inventar valores. Sensor roto = `null`; datos antiguos o desconexión se muestran como tales (escena desaturada con `--scene-saturation-stale` / `--scene-saturation-asleep`, texto que lo dice).
+- **Idioma**: docs en español; código, nombres, comentarios y commits en inglés. Commits convencionales (los valida commitlint).
+- **Estilo visual**: colores, espacios, tamaños de texto, radios, sombras y duraciones salen de `apps/web/src/styles/tokens.css` (`--scene-*`, `--neu-*`, `--elev-*`, `--space-*`, `--text-*`, `--radius-*`, `--duration-*`); en la escena 3D, a través de `scene/palette.ts`. Si falta un valor, añadir un token, no un literal (lo comprueba `cssRules.test.ts`). Criterios en `docs/02-direccion-artistica.md` y `docs/03-diseno-ui.md`.
+- **Interfaz neumórfica (D72, D80)**: toda pantalla se construye con `apps/web/src/ui/primitives/` (catálogo: `?ui=lab`). Paneles opacos sobre la escena, sin `backdrop-filter`; un estado nunca depende solo de la sombra; **hundido solo para pulsado, seleccionado o campo** (D81). Schibsted Grotesk (`--font-sans`) para la interfaz; Young Serif (`--font-display`) solo a tamaño de titular; cifras tabulares en las lecturas que cambian (D82). Fuentes recortadas con `pnpm fonts`; sonidos ambiente (CC0) con `pnpm audio` (D96; licencias en `docs/02`).
+- **Color y movimiento**: alertas con `--warm` (texto, iconos y bordes con `--warm-ink`), nunca rojo. Animaciones con `--duration-*` multiplicadas por `--motion-scale` (vale 0 con `prefers-reduced-motion`).
+- **Accesibilidad**: WCAG AA, objetivos ≥ `--target-min` (44 px), teclado completo, resumen textual de la escena.
+- **La escena 3D solo lee del store** (`data/greenhouse.ts`, `data/selectors.ts`). MQTT vive solo en `data/mqttClient.ts`; ESLint bloquea importarlo desde `scene/` y `shaders/`.
+- **IA**: no implementar nada de `docs/12-ideas-ia.md` salvo petición explícita. Sí respetar su checklist de preparación de datos (telemetría en bruto, origen de cada acción, IDs estables, calibraciones versionadas).
+- Si una petición contradice una decisión de `docs/11-decisiones.md`, avisar antes de hacerla. Las decisiones nuevas se registran ahí.
+
+## Stack
+
+pnpm workspaces · TypeScript estricto · Web: Vite, React, React Three Fiber + drei, Zustand, TanStack Query, Motion, Web Audio, suncalc, mqtt.js, zod, vite-plugin-pwa · Hub: Fastify + SQLite (Drizzle) · Broker: Mosquitto (Docker) · Firmware: PlatformIO (Arduino) en ESP32 · Tests: Vitest + Playwright (Chrome instalado).
+
+## Estructura
+
+```
+apps/web          PWA (scene/, shaders/, ui/, features/, data/, styles/)
+apps/hub          historial, reglas, API
+apps/simulator    invernadero falso por MQTT
+packages/shared   tipos, esquemas zod, topics MQTT, fichas de especie
+packages/sim-core el invernadero simulado sin red: el simulador lo usa por MQTT, la demo en un Web Worker
+firmware/         ESP32
+assets/           Blender, texturas, scripts del pipeline 3D
+infra/            docker-compose (mosquitto, hub)
+docs/             documentación
+```
+
+## Contrato MQTT (resumen)
+
+Prefijo `vitreo/<deviceId>/`: `status` (LWT, retenido) · `telemetry` (retenido, JSON) · `event` · `cmd` · `ack` (por `requestId`) · `config` (retenido) · `weather` (retenido, solo lo publica el hub: AEMET, D97; en la demo, un cielo simulado, `source: "simulated"`, D111). Se lee con tolerancia lo que informa (`status`, `telemetry`, `event`, `ack`, `weather`: campos desconocidos fuera) y son estrictos `cmd`, `config` y todo lo que se publica (D107); un tipo de evento desconocido se guarda y se muestra como línea neutra, nunca se interpreta (D108). Todo mensaje lleva `"v": 1`, salvo `config`, que va en `"v": 2` y lleva ubicación redondeada y zona horaria (D89; versión desconocida → `config.rejected`); órdenes, ACK y eventos de acción llevan `source`; sensor roto = `null`. Humedad de tierra normalizada 0–1; °C; timestamps Unix UTC. Detalle en `docs/05-arquitectura.md`. Cualquier cambio del contrato se hace primero en `packages/shared`.
+
+## Modelos 3D
+
+Los objetos del `.glb` se localizan por nombre: `plant_<id>`, `pot_<id>`, `soil_<id>`, `foliage_<id>` (shape keys `wilt`, `grow_0..3`), `vent_window` (`open`), `grow_light` (tira `light_strip`), `fan`/`fan_blades`, `tank`/`tank_water`, `sensor_box`, `door` (empty en la bisagra), `decor_*`, empties `cam_home`, `cam_focus_<id>`. Los colores salen del **nombre del material** (tabla en docs/04). Ver `docs/04-pipeline-3d-blender.md`. Presupuesto: < 4 MB, < 150 k triángulos, < 100 draw calls, 60 fps en móvil medio.
+
+## Flujo de trabajo
+
+- Antes de dar algo por hecho: `pnpm lint`, `pnpm typecheck` y `pnpm test`. El hook Stop de `.claude/settings.json` ejecuta `pnpm typecheck` si hay `.ts` cambiados.
+- Cambios visuales: `pnpm capture` antes y después (capturas en `referencias/progreso/`).
+- Sin hardware, desarrollar contra `apps/simulator`. El simulador diario (`sim`) es un servicio de Docker que vuelve solo tras reiniciar (D94) y sigue donde estaba tras `pnpm release` (guarda su estado en el volumen `vitreo_sim-data`, D100); `pnpm status` comprueba que todo está en marcha (`--repair` reinicia contenedores con el puerto muerto; lo lanza solo la tarea de inicio de sesión de `pnpm boot:install`). Broker: `pnpm broker:up` (necesita `.env`, ver `.env.example`) y `pnpm broker:check`.
+- **Publicar = `pnpm release`, y nada más (D92)**: solo desde `main` limpio y subido; reconstruye el hub y el simulador diario y construye la PWA en `apps/web/dist/` (lo que sirve nginx al móvil). Nunca `vite build --outDir dist` ni reconstruir el hub a mano; `vite build` va a `apps/web/build/`. Lo vigila `scripts/publishing.test.mjs`.
+- Tiempo exterior (D97): el hub pregunta a AEMET con `AEMET_API_KEY` (solo en `.env`; los hubs de los e2e nunca llaman a AEMET: `POST /test/weather`). Reglas del hub (retención `outdoorHold`: ventana cerrada con lluvia o viento, solo ventilador; aviso "Previsión de helada") en `apps/hub/src/weather/`.
+- Hub (D87): en Docker con `pnpm infra:up` (arranca lo construido; `pnpm hub:logs`, `pnpm hub:backup` (una copia ahora, con las fotos del diario), `pnpm hub:restore`; claves de *push*: `pnpm hub:vapid`, solo en `.env`). Su base de datos vive en un volumen de Docker; `data/hub/` solo tiene copias y archivo. `pnpm --filter @vitreo/hub dev` es otro hub (base de datos, invernadero `dev` y puerto 8797 propios). Migraciones: `pnpm --filter @vitreo/hub db:generate` tras cambiar `apps/hub/src/db/schema.ts`. La lógica del hub es portátil (también corre en la demo): las rutas en `routes.ts`, sin Fastify; lo que necesita Node (Fastify, better-sqlite3, mqtt.js, ficheros, web-push) va en sus módulos aparte, y ESLint lo vigila (docs/05).
+- Modelos 3D: los modela Claude en Blender (D54). El diorama: `assets/blender/vitreo.blend`; orden `build_greenhouse.py` (D58) → `bake_lightmaps.py` (regenerar obliga a rehornear) → `pnpm models:export` (Blender sin ventana) → `pnpm models` (optimiza, comprueba el contrato y convierte los lightmaps). La app carga `vitreo.glb` a tamaño real (D59). Rendimiento real: `pnpm perf`; en el móvil, `?stats`.
+- Vídeo de la landing (D130, D132): `pnpm video:landing` graba la demo real fotograma a fotograma (30 fps, reloj de Playwright, `?video` y `window.__vitreo`, solo en desarrollo), le pone su banda sonora (música compuesta en código, ambiente, toques y aparatos de la propia app: `src/app/videoSoundtrack.ts`) y saca los MP4 en `video/`; `--test`, unos fotogramas para revisar antes; `--audio-only`, solo el sonido de nuevo.
+- Tráiler para redes (`video/trailer/`, HyperFrames: HTML + GSAP → MP4), pensado para enseñar el proyecto, no para vender, y tranquilo: la app a pantalla completa en un vuelo lento y continuo de función en función (sin zooms de golpe ni paneles), rótulos de una línea, unos segundos en formato móvil, el cuaderno y el cierre. `pnpm video:trailer` graba su metraje de la demo real (el vuelo, el móvil y el cuaderno; `--test`, unos fotogramas; `--notebook`, solo el cuaderno) y, con él, lo que sonaba la app (ambiente, toques y aparatos, con el código de sonido de la propia app, sin música); en `video/trailer/`: `npm run assets` (fuentes, música compuesta en código con `make-soundtrack.mjs` y la mezcla: los sonidos de la app por encima, la música por debajo), `npm run check` y `npm run render` → `video/vitreo_trailer.mp4` (16:9, 1080p; solo horizontal). El render necesita `ffmpeg` y `ffprobe` en el `PATH`. Los momentos del vuelo (`T` en `trailer-footage.mjs`), los del montaje (`index.html`) y los compases de la música (2,5 s) van a la par. Lo que afirma debe ser verdad (cifras, "datos simulados").
+- e2e (D95): `pnpm e2e` es la suite rápida (cada cambio, ≈ 2 min); `pnpm e2e:full` lo ejecuta todo, capturas de cada fase incluidas (antes del *merge* y de `pnpm release`, ≈ 4 min); `pnpm perf` va solo. Necesitan `pnpm broker:up`. Cuatro *workers* en paralelo, cada uno con su pila aislada: simulador (dispositivo `e2e`, `e2e1`…; puertos 8789+10·i), hub en memoria (8790+10·i; `seedHistory` le siembra una semana) y Vite (5174+i), nunca los del uso diario (D85, D87, D88); en `helpers.ts`, `CONTROL` y `HUB` ya son los del *worker*. Usan la GPU real (`E2E_GL=software` para SwiftShader; `E2E_WORKERS` cambia cuántos). Las capturas de A8 en adelante llevan la etiqueta `@capture`. Instalabilidad de la PWA: `pnpm pwa:check`. Demo pública (D66, plan en docs/09): `pnpm demo:dev` (puerto 5190) y `pnpm e2e:demo`, sin broker ni hub; `vite --mode demo` lee solo `apps/web/demo/.env.demo` y no lleva cliente MQTT; su hub es el código del hub sobre sql.js en el worker (`apps/hub/src/portable.ts`, D109), y `apps/hub/src/contract.test.ts` lo mantiene igual que el de casa. La demo corre con su propio reloj (60× o "un día en un minuto", D112) y sigue desde un mes grabado (D129: los últimos 7 días lectura a lectura, los anteriores en los resúmenes por hora del hub; el depósito se rellena cada semana): `pnpm demo:week` lo regenera (`apps/web/demo/week.json`) tras cambiar el simulador, el hub o el cielo. **Publicar la demo = `pnpm demo:release`** (solo desde `main` limpio y subido): `pnpm demo:build` construye `apps/web/demo-dist/` y lo comprueba (`scripts/demo-check.mjs`: nada de `.env`, de casa ni de la *tailnet*); luego sube esa carpeta a Vercel (`vitreo-demo.vercel.app`). El cuaderno "Cómo se hizo" (D113, D133) es una página propia de la demo, `/cuaderno` (`apps/web/cuaderno.html`): un recorrido por la demo en siete paradas (`apps/web/src/notebook/stops/`); cada decisión citada debe existir en docs/11 (lo comprueba `content.test.ts`). Sus imágenes y clips son de la demo actual: `pnpm notebook:shots` los hace (reloj de Playwright y modo vídeo, `scripts/demoDriver.mjs`; capturas en `referencias/progreso/`, clips mudos en `src/notebook/clips/`) y `pnpm notebook:images` pasa a WebP las de `images.json`; nunca fotos del diario. La semana acelerada (D104): `pnpm sim:week`, y su test en `packages/sim-core/src/week.test.ts`. En el móvil se usa por HTTPS con Tailscale Serve (`docs/05`).

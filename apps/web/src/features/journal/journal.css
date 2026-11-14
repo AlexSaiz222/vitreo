@@ -1,0 +1,173 @@
+/* The plant's journal (A8, D93). Flat on the sheet, like a notebook: the
+   note field is the only well (inset is for input, D81). */
+
+.journal {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.journal-composer,
+.journal-preview {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.journal-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Tags (A12): pressed while chosen (D81), never colour alone. */
+.journal-tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* On an entry: what happened, in a word, above its text. */
+.journal-tags {
+  margin: 0;
+  padding-block-start: var(--space-1);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.journal-preview > img,
+.journal-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: var(--journal-photo-max);
+  object-fit: cover;
+  border-radius: var(--radius-button);
+  background: var(--chart-gap);
+}
+
+.journal-days,
+.journal-items {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journal-days {
+  gap: var(--space-4);
+}
+
+.journal-day-label {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-12);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.journal-item {
+  display: grid;
+  grid-template-columns: var(--journal-time-width) 1fr auto;
+  align-items: start;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+}
+
+.journal-item + .journal-item {
+  border-block-start: 1px solid var(--line);
+}
+
+.journal-time {
+  padding-block-start: var(--space-1);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+/* What the greenhouse did spans the row: quieter, no button. */
+.journal-item:not(:has(.journal-delete)) > :last-child {
+  grid-column: 2 / -1;
+}
+
+.journal-body {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.journal-note,
+.journal-event {
+  margin: 0;
+  padding-block-start: var(--space-1);
+  font-size: var(--text-14);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.journal-event {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--ink-soft);
+}
+
+/* A small mark before each event: water, a warning (warm), a rule. */
+.journal-event::before {
+  content: '';
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-block-start: calc(var(--text-14) * 0.45);
+  border-radius: var(--radius-round);
+  background: var(--ink-soft);
+}
+
+.journal-item[data-kind='watering'] .journal-event::before {
+  background: var(--water-ink);
+}
+
+.journal-item[data-kind='alert'] .journal-event::before {
+  background: var(--warm);
+  box-shadow: 0 0 0 1px var(--warm-ink);
+}
+
+.journal-photo {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.journal-photo figcaption {
+  font-size: var(--text-14);
+}
+
+.journal-photo-blank {
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-align: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-button);
+  background: var(--chart-gap);
+}
+
+/* Not on the hub yet: said in words, not only with a softer look. */
+.journal-item[data-pending='true'] .journal-tags,
+.journal-item[data-pending='true'] .journal-note,
+.journal-item[data-pending='true'] .journal-photo {
+  opacity: var(--journal-pending-opacity);
+}
+
+.journal-waiting {
+  margin: 0;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.journal-waiting[data-tone='attention'] {
+  color: var(--warm-ink);
+}
+
+.journal-more {
+  justify-self: start;
+}

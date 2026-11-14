@@ -1,0 +1,20 @@
+{
+  "name": "@vitreo/simulator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "broker:check": "tsx src/check-broker.ts",
+    "week": "tsx src/week.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vitreo/shared": "workspace:*",
+    "@vitreo/sim-core": "workspace:*",
+    "mqtt": "^5.16.0",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.5"
+  }
+}

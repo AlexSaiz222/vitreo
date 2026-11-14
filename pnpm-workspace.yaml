@@ -1,0 +1,9 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Dependencies allowed to run install scripts.
+onlyBuiltDependencies:
+  - esbuild
+  # Downloads its ffmpeg binary: `pnpm audio` (A9).
+  - ffmpeg-static

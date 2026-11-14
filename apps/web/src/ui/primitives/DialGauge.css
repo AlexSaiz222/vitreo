@@ -1,0 +1,91 @@
+/* Tick-mark dial (D72). Ticks reached by the value in ink (well above 3:1),
+   the rest faint and decorative; a raised knob in the middle carries the
+   number in text. */
+
+.ui-dial {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* Sized by its number's text (the same 176, 136 and 64 px at 100 %), so
+     with text at 200 % the number still fits inside the knob (A12). */
+  width: calc(var(--text-28) * 6.2857);
+  aspect-ratio: 1;
+}
+
+.ui-dial[data-size='md'] {
+  width: calc(var(--text-20) * 6.8);
+}
+
+.ui-dial[data-size='sm'] {
+  width: calc(var(--text-12) * 5.3333);
+}
+
+.ui-dial-ticks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ui-dial-tick {
+  stroke: color-mix(in srgb, var(--ink-soft) 30%, var(--neu-base));
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.ui-dial[data-size='sm'] .ui-dial-tick {
+  stroke-width: 5;
+}
+
+.ui-dial-tick[data-active='true'] {
+  stroke: var(--ink);
+}
+
+.ui-dial-threshold {
+  stroke: var(--warm-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ui-dial-mark {
+  fill: var(--accent);
+}
+
+.ui-dial-knob {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 58%;
+  aspect-ratio: 1;
+  background: var(--neu-base);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--elev-raised-md);
+}
+
+.ui-dial[data-size='sm'] .ui-dial-knob {
+  width: 54%;
+  box-shadow: var(--elev-raised-sm);
+}
+
+.ui-dial-value {
+  font-size: var(--text-28);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-dial[data-size='md'] .ui-dial-value {
+  font-size: var(--text-20);
+}
+
+.ui-dial[data-size='sm'] .ui-dial-value {
+  font-size: var(--text-12);
+}
+
+.ui-dial-caption {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}

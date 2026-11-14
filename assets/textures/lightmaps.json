@@ -1,0 +1,41 @@
+{
+  "uv": "UVMap_Light",
+  "colorSpace": "srgb",
+  "resolution": 2048,
+  "samples": 512,
+  "objects": [
+    "base",
+    "gravel",
+    "path",
+    "steps",
+    "floor_main",
+    "frame_main",
+    "decor_ground",
+    "pot_basil_01",
+    "pot_chives_01",
+    "pot_lettuce_01",
+    "pot_parsley_01",
+    "pot_strawberry_01",
+    "pot_tomato_01",
+    "soil_basil_01",
+    "soil_chives_01",
+    "soil_lettuce_01",
+    "soil_parsley_01",
+    "soil_strawberry_01",
+    "soil_tomato_01"
+  ],
+  "atlases": {
+    "day": {
+      "file": "lightmap_day.png",
+      "intensity": 1.72737
+    },
+    "night": {
+      "file": "lightmap_night.png",
+      "intensity": 0.7471
+    },
+    "lamp": {
+      "file": "lightmap_lamp.png",
+      "intensity": 1.64117
+    }
+  }
+}

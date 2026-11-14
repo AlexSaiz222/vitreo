@@ -1,0 +1,12 @@
+{
+  "name": "trailer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node make-assets.mjs",
+    "dev": "npx --yes hyperframes@0.9.38 preview",
+    "check": "npx --yes hyperframes@0.9.38 check",
+    "render": "npx --yes hyperframes@0.9.38 render --crf 12 -o ../vitreo_trailer.mp4",
+    "publish": "npx --yes hyperframes@0.9.38 publish"
+  }
+}

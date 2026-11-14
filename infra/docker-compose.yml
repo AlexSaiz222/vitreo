@@ -1,0 +1,106 @@
+# Local services. From the repository root: `pnpm infra:up` (everything),
+# `pnpm broker:up` (only the broker). Rebuilding the hub, the daily simulator
+# and the PWA the phone gets is `pnpm release` only (D92): on main, clean and
+# pushed. Every service restarts on its own after a reboot (D94; `pnpm status`).
+# Passwords come from the root .env (see .env.example).
+name: vitreo
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    # Every port is bound to this computer only (D74): the phone reaches the
+    # broker through Tailscale Serve, never over the home network.
+    ports:
+      - '127.0.0.1:${MQTT_PORT:-1883}:1883' # MQTT (hub, simulator; the ESP32 is decided in phase 3)
+      - '127.0.0.1:${MQTT_WS_PORT:-9002}:9001' # MQTT over WebSocket (web app)
+    environment:
+      MQTT_DEVICE_PASSWORD: ${MQTT_DEVICE_PASSWORD:?set MQTT_DEVICE_PASSWORD in .env}
+      MQTT_HUB_PASSWORD: ${MQTT_HUB_PASSWORD:?set MQTT_HUB_PASSWORD in .env}
+      MQTT_WEB_PASSWORD: ${MQTT_WEB_PASSWORD:?set MQTT_WEB_PASSWORD in .env}
+    entrypoint: ['/bin/sh', '/vitreo/entrypoint.sh']
+    volumes:
+      - ./mosquitto:/vitreo:ro
+      - mosquitto-data:/mosquitto/data
+
+  # The built PWA (written only by `pnpm release`, D92), for Tailscale to publish
+  # over HTTPS. Bound to this computer only.
+  web:
+    image: nginx:1-alpine
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:${WEB_PORT:-8080}:80'
+    volumes:
+      - ../apps/web/dist:/usr/share/nginx/html:ro
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+  # History, plants, location and config (A4, D87). The live SQLite database
+  # is in a named volume: a Windows folder is slow and its file locking is
+  # unreliable. Only backups and archives go to data/hub/{backups,archive}/
+  # (a folder you can see and copy). Bound to this computer only; the phone reaches it at /api
+  # through nginx and Tailscale Serve.
+  hub:
+    build:
+      context: ..
+      dockerfile: infra/hub/Dockerfile
+    image: vitreo-hub
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    # Time to close the database and the MQTT session cleanly.
+    stop_grace_period: 20s
+    ports:
+      - '127.0.0.1:${HUB_PORT:-8787}:8787'
+    environment:
+      HUB_DEVICE_ID: ${HUB_DEVICE_ID:-sim}
+      HUB_TZ: ${HUB_TZ:-Europe/Madrid}
+      TZ: ${HUB_TZ:-Europe/Madrid}
+      HUB_MQTT_URL: mqtt://mosquitto:1883
+      MQTT_HUB_PASSWORD: ${MQTT_HUB_PASSWORD:?set MQTT_HUB_PASSWORD in .env}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Web push (A7): only in .env (pnpm hub:vapid makes them once).
+      HUB_VAPID_PUBLIC_KEY: ${HUB_VAPID_PUBLIC_KEY:-}
+      HUB_VAPID_PRIVATE_KEY: ${HUB_VAPID_PRIVATE_KEY:-}
+      HUB_VAPID_SUBJECT: ${HUB_VAPID_SUBJECT:-mailto:vitreo@localhost}
+      # Outdoor weather (A10): the AEMET OpenData key, only in .env. Empty: no weather.
+      AEMET_API_KEY: ${AEMET_API_KEY:-}
+      AEMET_MUNICIPIO: ${AEMET_MUNICIPIO:-28079}
+      AEMET_ESTACION: ${AEMET_ESTACION:-}
+      # Only the first time (D79): then Ajustes › Ubicación.
+      VITE_LOCATION_LAT: ${VITE_LOCATION_LAT:-40.42}
+      VITE_LOCATION_LNG: ${VITE_LOCATION_LNG:--3.70}
+    volumes:
+      - hub-data:/var/lib/vitreo
+      - ../data/hub:/out
+
+  # The daily simulator (device `sim`) until the real ESP32 arrives: a service,
+  # so it comes back on its own after a reboot (restart: unless-stopped).
+  # Its control API is bound to this computer only. The e2e tests start their
+  # own simulator (device `e2e`, port 8789), never this one.
+  simulator:
+    build:
+      context: ..
+      dockerfile: infra/simulator/Dockerfile
+    image: vitreo-simulator
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    stop_grace_period: 10s
+    ports:
+      - '127.0.0.1:${SIMULATOR_CONTROL_PORT:-8788}:8788'
+    environment:
+      SIMULATOR_DEVICE_ID: ${SIMULATOR_DEVICE_ID:-sim}
+      SIMULATOR_MQTT_URL: mqtt://mosquitto:1883
+      MQTT_DEVICE_PASSWORD: ${MQTT_DEVICE_PASSWORD:?set MQTT_DEVICE_PASSWORD in .env}
+      SIMULATOR_TIME_SCALE: ${SIMULATOR_TIME_SCALE:-1}
+      # Its greenhouse over restarts (D100): a release or a reboot carries on
+      # where it was. `docker volume rm vitreo_sim-data` starts it fresh.
+      SIMULATOR_STATE_FILE: /var/lib/vitreo-sim/state.json
+      TZ: ${HUB_TZ:-Europe/Madrid}
+    volumes:
+      - sim-data:/var/lib/vitreo-sim
+
+volumes:
+  mosquitto-data:
+  hub-data:
+  sim-data:

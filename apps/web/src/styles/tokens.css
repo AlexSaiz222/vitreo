@@ -1,0 +1,312 @@
+/*
+ * Vitreo design tokens. Source of truth: docs/03-diseno-ui.md.
+ * Use these everywhere; never hard-code colours, sizes or durations.
+ *
+ * Theme: day is the default. Night is selected with <html data-theme="night">,
+ * which src/app/dayNight.ts sets from the real sunrise and sunset (suncalc).
+ * The OS light/dark preference is deliberately not used (D26, P11).
+ *
+ * Colours are swapped as plain values (not light-dark()) so the 3D scene can
+ * read resolved colours from these variables.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Colour · day */
+  --bg: #faf9f6;
+  --ink: #1e2320;
+  --ink-soft: #5e655f;
+  --line: rgb(30 35 32 / 0.08);
+  --accent: #5e8c58;
+  /* Water (D81): a soft blue for what is about watering. --water is a fill
+     (the moisture drop, the main action); --water-ink is text and icons. */
+  --water: #7ea9cc;
+  --water-ink: #2d5a7b;
+  --warm: #c9774f;
+  --focus: #3d6fb6;
+
+  /* Scene palette, taken from ref-03 (docs/02-direccion-artistica.md, D52).
+     Same by day and night: the lighting, not the materials, changes at night. */
+  --scene-frame: #f1ece3; /* clay white profiles */
+  --scene-plinth: #edd5b8; /* warm sand: rims and top of the plinth */
+  --scene-tray: #cbaa87; /* the sunken sand tray inside the rims */
+  --scene-path: #e6ceb1; /* path from the door and the steps */
+  --scene-glass: #dcebea;
+  --scene-terracotta: #bb7547;
+  --scene-terracotta-shade: #a86c43;
+  --scene-soil-dry: #b39a7c;
+  --scene-soil-wet: #3a281e;
+  --scene-leaf-light: #abac68;
+  --scene-leaf-mid: #849050;
+  --scene-leaf-deep: #687a3f;
+  --scene-flower-pink: #e7a6a1;
+  --scene-flower-cream: #f3e3b0;
+  --scene-leaf-new: #97a05a; /* young leaves */
+  --scene-flower-white: #f7f2e8; /* petals (strawberry) */
+  --scene-flower-heart: #e6c97a; /* centre of a flower */
+  --scene-fruit: #c4604f; /* strawberry fruit */
+  --scene-fruit-green: #a3ad66; /* unripe cherry tomatoes */
+  --scene-flower-chives: #c4a6c8; /* chive flowers */
+  --scene-stake: #c8b38c; /* the tomato stake */
+  --scene-device: #f1ede6; /* device bodies: tank, fan, grow light, gutter */
+  --scene-device-dark: #9a948c; /* caps, hoses, cables, pump */
+  --scene-fan-back: #bdb6ac; /* inside of the fan housing */
+  --scene-fan-blade: #d3ccc2; /* fan blades */
+  --scene-hardware: #d6cfc4; /* joints, screws, handle */
+  --scene-gasket: #a39d95; /* rubber seals of the glass */
+  --scene-water: #9cc9c4; /* water in the tank gauge */
+  --scene-led: #9bc38e; /* status light of the sensor box */
+  --scene-light-strip: #fff3df; /* grow light strip, off (on: --scene-night-glow) */
+  --scene-decor: #ffffff; /* tint over the decor vertex colours (white: as modelled) */
+  --scene-night-glow: #ffd9a8;
+  /* The page by day and by night (the same as --bg in each theme): the
+     scene blends between them through twilight (A9); the interface fades
+     when the theme switches at the horizon. */
+  --scene-day-bg: #faf9f6;
+  --scene-night-bg: #161a22;
+  /* What the page passes through between them (D135): the warm of a sunset,
+     not the grey a straight blend of cream and ink blue gives. */
+  --scene-dusk-bg: #e9bfa2;
+  /* The inks of each theme by name (the same values as --ink and --ink-soft
+     there), for words written straight on the page: through twilight they
+     follow how dark the page really is, not the theme (D135). */
+  --ink-on-light: #1e2320;
+  --ink-soft-on-light: #5e655f;
+  --ink-on-dark: #ece8e1;
+  --ink-soft-on-dark: #a6abb3;
+  /* Atmosphere (A9, D96): faint, warm, never sparkly. */
+  --scene-dust: #eccb93; /* golden motes in the sunlight */
+  --scene-firefly: #e8f0a0; /* a soft yellow-green glow */
+  --scene-condensation: #f2f6f5; /* mist on the glass */
+  /* Weather outside (A10, D97): calm, never a storm. */
+  --scene-rain: #9fb1c2; /* drops on the glass: a cool grey */
+  --scene-rain-streak: #6d869e; /* falling rain: darker, so thin strokes read on white */
+  --scene-snow: #ffffff; /* sparse flakes */
+  --scene-overcast: #ecebe7; /* the page under clouds, a touch greyer */
+  /* Light colours (docs/02). */
+  --scene-sun: #ffe2bf; /* warm late-afternoon sun, as in the v19 bake */
+  --scene-moon: #9fb0d0;
+  --scene-shadow: #9c8670; /* soft, warm shadows as in ref-03, never black */
+  --scene-sky: #f4ece1; /* daytime fill: what shadowed areas receive (v19 sky) */
+
+  /* "Asleep" scene when disconnected, and a milder hint when data is stale (docs/06). */
+  --scene-saturation-asleep: 0.2;
+  --scene-saturation-stale: 0.6;
+
+  /* Typography (P08 → D82): Schibsted Grotesk for the interface; Young Serif
+     only at display sizes (--text-28 and up: the app title, plant names).
+     Subset and served by the app (pnpm fonts → public/fonts, styles/fonts.css),
+     so they work offline; each has a metric-matched local fallback, so
+     nothing moves when it arrives. */
+  --font-display: 'Young Serif', 'Young Serif fallback Georgia', Georgia, serif;
+  --font-sans:
+    'Schibsted Grotesk', 'Schibsted Grotesk fallback Roboto', 'Schibsted Grotesk fallback Arial',
+    system-ui, sans-serif;
+
+  /* Type scale in rem so text scales with user settings (12 · 14 · 16 · 20 · 28 · 40 px) */
+  --text-12: 0.75rem;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-20: 1.25rem;
+  --text-28: 1.75rem;
+  --text-40: 2.5rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  --leading-body: 1.5;
+  --leading-heading: 1.15;
+  --tracking-caps: 0.06em;
+
+  /* Space: 8 px grid, 4 px for fine adjustments */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --gutter-mobile: 20px;
+  --gutter-desktop: clamp(32px, 3vw, 48px);
+
+  /* Minimum touch target */
+  --target-min: 44px;
+
+  /* Side sheet on desktop, menus above the dock */
+  --sheet-width: 24rem;
+  /* Phone: the sheet opens at half height and expands to nearly full */
+  --sheet-half-height: 50dvh;
+  --sheet-full-height: 88dvh;
+  --menu-width: 20rem;
+  --toast-width: 28rem;
+
+  /* The notebook ("Cómo se hizo", D113, D133): a reading column, pictures
+     and clips across the page, phone captures at phone width, and the
+     captures of a strip at the width of a card. */
+  --notebook-measure: 40rem;
+  --notebook-wide: 60rem;
+  --notebook-phone: 17rem;
+  --notebook-strip-item: 11rem;
+  /* D117: the index in the margin on wide screens, the bar on top on the
+     rest, the reading progress along the top edge. */
+  --notebook-side: 15rem;
+  --notebook-bar: calc(var(--target-min) + var(--space-4));
+  --notebook-progress: 3px;
+  --notebook-lightbox-room: 9rem;
+  --notebook-backdrop: color-mix(in srgb, var(--ink) 45%, transparent);
+
+  /* Shape and depth */
+  --radius-button: 12px;
+  --radius-panel: 20px;
+  --radius-round: 9999px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Neumorphic material (D72): same-colour surfaces lit from the top left,
+     the direction of the diorama's sun. The base is the clay white of the
+     frame; shadows are warm, from --scene-shadow (never black, D52). Panels
+     over the 3D canvas are opaque and float on --elev-float; raised and
+     inset only happen inside them. Static shadows only (no animation). */
+  --neu-base: var(--scene-frame);
+  --neu-light: color-mix(in srgb, var(--neu-base) 20%, #ffffff);
+  --neu-dark: color-mix(in srgb, var(--neu-base) 50%, var(--scene-shadow));
+  --elev-raised-sm: -2px -2px 5px var(--neu-light), 2px 2px 5px var(--neu-dark);
+  --elev-raised-md: -6px -6px 14px var(--neu-light), 6px 6px 14px var(--neu-dark);
+  /* The main action: a little above the rest, not a halo around it. */
+  --elev-raised-primary: -3px -3px 7px var(--neu-light), 3px 3px 7px var(--neu-dark);
+  --elev-inset-sm: inset 2px 2px 5px var(--neu-dark), inset -2px -2px 5px var(--neu-light);
+  --elev-inset-md: inset 4px 4px 10px var(--neu-dark), inset -4px -4px 10px var(--neu-light);
+  --elev-pressed: var(--elev-inset-sm);
+  /* Disabled controls: flat (no light, no shadow) on a slightly darker fill,
+     so they still read as buttons, not as loose text. */
+  --surface-disabled: color-mix(in srgb, var(--neu-base) 90%, var(--ink-soft));
+  /* The main action (D81, replaces the ink fill of D46): raised, tinted with
+     water, label and icon in --water-ink. */
+  --primary-fill: color-mix(in srgb, var(--water) 28%, var(--neu-base));
+  /* The water rising along "Regar ahora" while it waters (D128). */
+  --water-rising: color-mix(in srgb, var(--water) 42%, transparent);
+  --elev-float-tint: color-mix(in srgb, var(--scene-shadow) 30%, transparent);
+  --elev-float: 0 2px 6px var(--elev-float-tint), 0 20px 44px -10px var(--elev-float-tint);
+  /* A lone round button over the scene: it floats, closer to the ground. */
+  --elev-float-sm: 0 1px 3px var(--elev-float-tint), 0 8px 20px -8px var(--elev-float-tint);
+  /* Under the pointer (D131): what can be pressed comes a little closer, a
+     touch lighter and a little higher. Never sunken: that is for pressed. */
+  --surface-hover: color-mix(in srgb, var(--neu-base) 30%, var(--neu-light));
+  --primary-fill-hover: color-mix(in srgb, var(--primary-fill) 60%, var(--neu-light));
+  --elev-raised-hover: -4px -4px 10px var(--neu-light), 4px 4px 10px var(--neu-dark);
+  --elev-float-hover: 0 2px 5px var(--elev-float-tint), 0 12px 26px -8px var(--elev-float-tint);
+  /* The sheets' own scrollbar: a thin rail a little in from the edge, that
+     shows while scrolling or under the pointer and fades away. */
+  --scroll-rail-width: 4px;
+  --scroll-rail-width-active: 6px;
+  --scroll-rail-inset: 6px;
+  --scroll-thumb: color-mix(in srgb, var(--ink-soft) 32%, transparent);
+  --scroll-thumb-active: color-mix(in srgb, var(--ink-soft) 55%, transparent);
+  --scroll-thumb-min: 32px;
+  /* Text, icons and borders on the warm tone: --warm itself (2.9:1 on the
+     base by day) is only for fills. */
+  --warm-ink: color-mix(in srgb, var(--warm) 62%, var(--ink));
+  /* The accent as text on paper or on a panel (AA): the notebook's labels. */
+  --accent-ink: color-mix(in srgb, var(--accent) 62%, var(--ink));
+  /* History charts (A5, D88): the moisture line in water, below the
+     plant's threshold in warm; the threshold a soft band, never a hard
+     line; gaps a faint wash, so missing data looks missing. */
+  --chart-line: var(--water-ink);
+  --chart-thirsty: var(--warm-ink);
+  --chart-band: color-mix(in srgb, var(--warm) 22%, transparent);
+  --chart-gap: color-mix(in srgb, var(--ink-soft) 12%, transparent);
+  --chart-grid: var(--line);
+  --chart-stroke: 2px;
+  --chart-height: 144px;
+  /* The y axis labels' column ("17 °C", "100 %"): in text units, so it grows
+     with the text size (200 %, A12) instead of spilling out of the sheet. */
+  --chart-axis-width: calc(var(--text-12) * 4.25);
+  /* Notes and photos on the chart (A8): a small mark above the plot. */
+  --chart-note: var(--ink-soft);
+  /* The greenhouse sheet (A11): the air inside in ink, outside (AEMET) soft
+     and dashed, daylight in the accent, the grow light its own glow, and what
+     was on (window, fan, light) a strip in the accent. */
+  --chart-air: var(--ink);
+  --chart-outside: var(--ink-soft);
+  --chart-dash: 3 3;
+  --chart-lux: var(--accent);
+  --chart-grow: color-mix(in srgb, var(--scene-night-glow) 34%, transparent);
+  --chart-activity: color-mix(in srgb, var(--accent) 70%, transparent);
+  --chart-activity-label: 72px;
+  /* The plant's journal (A8, D93). */
+  --journal-photo-max: 320px;
+  --journal-time-width: 44px;
+  --journal-pending-opacity: 0.75;
+  --radius-card: 20px;
+  --radius-float: 28px;
+  --radius-pill: 9999px;
+
+  /* Motion. Nothing bounces, nothing blinks. */
+  --duration-micro: 150ms;
+  /* Raised → inset when pressed (D72); × --motion-scale, instant when reduced. */
+  --duration-press: 140ms;
+  --duration-panel: 300ms;
+  /* Small pieces that come and go (the dock's details): light, and over. */
+  --duration-reveal: 200ms;
+  /* How long the sheets' scrollbar stays after the last scroll. */
+  --duration-scroll-fade: 900ms;
+  /* The interface changing between day and night (A9, D135): its surfaces
+     fade in about the time the scene's own blend takes (lightmaps.ts); the
+     text on them switches half way. Words written straight on the page
+     follow the page itself instead (data-page-tone). */
+  --duration-theme: 2.4s;
+  --duration-camera-min: 600ms;
+  --duration-camera-max: 900ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Multiply movement distances by this; 0 under reduced motion leaves only fades. */
+  --motion-scale: 1;
+
+  /* Fog in the scene (D122): the page's own mist. */
+  --fog-veil: #eef0ef;
+}
+
+/* Colour · night. */
+:root[data-theme='night'] {
+  --scene-rain-streak: #9fb1c2;
+  color-scheme: dark;
+
+  --bg: #161a22;
+  --ink: #ece8e1;
+  --ink-soft: #a6abb3;
+  --line: rgb(236 232 225 / 0.1);
+  --accent: #9bc38e;
+  --water: #6f97b8;
+  --water-ink: #b8d6ee;
+  --warm: #e39b75;
+  --focus: #8fb4ea;
+
+  /* Neumorphic material at night: the blue ink of the night page and sky,
+     lifted by the moonlight, with a hint of the lamp's warm glow, so panels
+     belong to the night scene instead of floating on it as grey. The
+     highlight is the lamp's glow; the shadow, deeper. */
+  --neu-base: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--scene-night-bg) 88%, var(--scene-moon)) 94%,
+    var(--scene-night-glow)
+  );
+  --neu-light: color-mix(in srgb, var(--neu-base) 84%, var(--scene-night-glow));
+  --neu-dark: color-mix(in srgb, var(--neu-base) 30%, #000000);
+  --elev-float-tint: color-mix(in srgb, #000000 55%, transparent);
+  --warm-ink: var(--warm);
+  --accent-ink: var(--accent);
+  --primary-fill: color-mix(in srgb, var(--water) 22%, var(--neu-base));
+  --fog-veil: #2c323d;
+  /* The grow light's glow on the dark chart: fainter, or it reads as a block. */
+  --chart-grow: color-mix(in srgb, var(--scene-night-glow) 16%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-scale: 0;
+  }
+}

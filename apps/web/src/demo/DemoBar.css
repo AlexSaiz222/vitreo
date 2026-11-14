@@ -1,0 +1,131 @@
+/* The demo's own line (D103, D111, D112): under the status, over the scene. */
+.demo-bar {
+  display: grid;
+  gap: 0;
+  justify-items: start;
+  pointer-events: auto;
+  transition: gap calc(var(--duration-panel) * var(--motion-scale)) var(--ease-out);
+}
+
+/* Words over the scene, as the status line: a label, not a card (D81). */
+.demo-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-height: var(--target-min);
+  margin: 0;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.demo-label-name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+/* The label is what opens the rest: a target of 44 px, with no box around it. */
+.demo-label-toggle {
+  min-height: var(--target-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.demo-label-more {
+  display: inline-flex;
+  color: var(--ink-soft);
+  transform: rotate(90deg);
+  transition: transform calc(var(--duration-panel) * var(--motion-scale)) var(--ease-out);
+}
+
+/* Six situations, over everything below (the dock too) and within the screen:
+   on a short phone they scroll instead of leaving it. */
+.demo-bar {
+  position: relative;
+  /* Only as wide as what it shows: stretched, it would lie over the round
+     icons at the right of a desktop and take their clicks. */
+  justify-self: start;
+}
+
+.hud-top:has(.demo-menu) {
+  z-index: 1;
+}
+
+.dock-menu.demo-menu {
+  position: absolute;
+  inset-block-start: calc(100% + var(--space-2));
+  inset-inline-start: 0;
+  width: min(var(--menu-width), calc(100vw - var(--gutter-mobile) * 2));
+  max-height: calc(100dvh - var(--hud-top-height, var(--space-16) * 3) - var(--space-16));
+}
+
+.demo-bar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Only "Demo · datos simulados" stays in view (it must, D103; D115, D124).
+   The clock, the speeds and "Probar situaciones" open with a tap on it, when
+   the keyboard reaches them or, with a mouse, when the pointer comes near;
+   and stay open while a menu of theirs is. They stay in the page while
+   folded, so Tab still reaches them and opens the bar. */
+.demo-label-clock {
+  display: none;
+}
+
+.demo-bar-row {
+  max-height: 0;
+  opacity: 0;
+  overflow: clip;
+  transition:
+    max-height calc(var(--duration-panel) * var(--motion-scale)) var(--ease-out),
+    opacity calc(var(--duration-panel) * var(--motion-scale)) var(--ease-out);
+}
+
+.demo-bar:has(:focus-visible),
+.demo-bar:has([aria-expanded='true']) {
+  gap: var(--space-3);
+}
+
+:is(.demo-bar:has(:focus-visible), .demo-bar:has([aria-expanded='true'])) .demo-label-clock {
+  display: inline;
+}
+
+:is(.demo-bar:has(:focus-visible), .demo-bar:has([aria-expanded='true'])) .demo-bar-row {
+  max-height: calc(var(--target-min) * 3);
+  opacity: 1;
+  overflow: visible;
+}
+
+:is(.demo-bar:has(:focus-visible), .demo-bar:has([aria-expanded='true'])) .demo-label-more {
+  transform: rotate(-90deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-bar:hover {
+    gap: var(--space-3);
+  }
+
+  .demo-bar:hover .demo-label-clock {
+    display: inline;
+  }
+
+  .demo-bar:hover .demo-bar-row {
+    max-height: calc(var(--target-min) * 3);
+    opacity: 1;
+    overflow: visible;
+  }
+
+  .demo-bar:hover .demo-label-more {
+    transform: rotate(-90deg);
+  }
+}

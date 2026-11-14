@@ -1,0 +1,179 @@
+/* Floating over the 3D canvas: opaque, rounded and lifted with a soft drop
+   shadow (D72); what is inside is raised or sunken in the same material. */
+
+.ui-sheet {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: var(--sheet-full-height);
+  padding: 0 var(--gutter-mobile) var(--space-8);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ink);
+  background: var(--neu-base);
+  border-radius: var(--radius-float) var(--radius-float) 0 0;
+  box-shadow: var(--elev-float);
+  transition: transform calc(var(--duration-panel) * var(--motion-scale)) var(--ease-out);
+  animation: ui-sheet-in var(--duration-panel) var(--ease-out);
+  /* Its own scrollbar (ScrollRail), not the system's. */
+  scrollbar-width: none;
+}
+
+.ui-sheet::-webkit-scrollbar {
+  display: none;
+}
+
+/* The thumb lives in the panel's content and is moved to where the eye
+   expects it; quiet until something scrolls or the pointer comes over. */
+.ui-scroll-thumb {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: var(--scroll-rail-inset);
+  z-index: 1;
+  width: var(--scroll-rail-width);
+  min-height: var(--scroll-thumb-min);
+  background: var(--scroll-thumb);
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  touch-action: none;
+  cursor: grab;
+  transition:
+    opacity var(--duration-panel) var(--ease-out),
+    width var(--duration-micro) var(--ease-out),
+    background-color var(--duration-micro) var(--ease-out);
+}
+
+/* A wider, invisible grip around it, for the mouse. */
+.ui-scroll-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--scroll-rail-inset) * -1);
+}
+
+.ui-sheet:hover > .ui-scroll-thumb,
+.ui-scroll-thumb[data-active='true'] {
+  opacity: 1;
+}
+
+.ui-scroll-thumb:hover,
+.ui-scroll-thumb[data-active='true']:active {
+  width: var(--scroll-rail-width-active);
+  background: var(--scroll-thumb-active);
+}
+
+.ui-scroll-thumb[data-hidden='true'],
+.ui-sheet[data-size='half'] > .ui-scroll-thumb {
+  display: none;
+}
+
+@keyframes ui-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-4) * var(--motion-scale)));
+  }
+}
+
+/* Half height: the sheet slides down, showing only its top part. */
+.ui-sheet[data-size='half'] {
+  overflow-y: hidden;
+  transform: translateY(calc(var(--sheet-full-height) - var(--sheet-half-height)));
+}
+
+.ui-sheet[data-dragging='true'] {
+  transition: none;
+}
+
+.ui-sheet-grab {
+  display: grid;
+  gap: var(--space-2);
+  padding-block-start: var(--space-6);
+  touch-action: none;
+}
+
+.ui-sheet[data-size='side'] .ui-sheet-grab {
+  padding-block-start: 0;
+  touch-action: auto;
+}
+
+/* A visible grip that is also a button (keyboard and screen readers). */
+.ui-sheet-handle {
+  display: grid;
+  place-items: center;
+  width: calc(var(--target-min) * 2);
+  height: var(--target-min);
+  margin: calc(-1 * var(--space-6)) auto calc(-1 * var(--space-2));
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: grab;
+}
+
+/* A flat grip: inset is only for pressed, selected or input (D81). */
+.ui-sheet-handle::before {
+  content: '';
+  width: var(--space-10);
+  height: var(--space-1);
+  background: color-mix(in srgb, var(--ink-soft) 45%, transparent);
+  border-radius: var(--radius-pill);
+}
+
+.ui-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--space-4);
+}
+
+.ui-sheet-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The display face only at display sizes (D80). */
+.ui-sheet-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-heading);
+  /* With text at 200 % one long word ("Invernadero") is wider than a phone:
+     it hyphenates (Spanish), or at worst breaks, and the close button stays. */
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+/* Focus is moved here so a screen reader starts at the title, not because it
+   can be operated: no ring on what cannot be pressed. */
+.ui-sheet-title:focus-visible {
+  outline: 0;
+}
+
+.ui-sheet-subtitle {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-soft);
+}
+
+.ui-sheet-body,
+.ui-sheet-more {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 48rem) {
+  .ui-sheet {
+    inset-block: var(--gutter-desktop);
+    inset-inline: auto var(--gutter-desktop);
+    width: var(--sheet-width);
+    height: auto;
+    padding: var(--space-8) var(--space-6);
+    border-radius: var(--radius-float);
+  }
+
+  .ui-sheet-title {
+    font-size: var(--text-40);
+  }
+}

@@ -1,0 +1,19 @@
+.app-shell {
+  position: relative;
+  height: 100%;
+}
+
+.app-scene {
+  position: fixed;
+  inset: 0;
+  transition: filter var(--duration-camera-max) var(--ease-out);
+}
+
+/* docs/06: when disconnected the diorama "falls asleep", desaturated. */
+.app-scene[data-freshness='disconnected'] {
+  filter: saturate(var(--scene-saturation-asleep));
+}
+
+.app-scene[data-freshness='stale'] {
+  filter: saturate(var(--scene-saturation-stale));
+}

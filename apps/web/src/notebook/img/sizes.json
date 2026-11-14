@@ -1,0 +1,150 @@
+{
+  "escena-dia": {
+    "width": 1920,
+    "height": 1200
+  },
+  "escena-noche": {
+    "width": 1920,
+    "height": 1200
+  },
+  "escena-dormida": {
+    "width": 1920,
+    "height": 1200
+  },
+  "modelo-cerca": {
+    "width": 1920,
+    "height": 1200
+  },
+  "ficha": {
+    "width": 1920,
+    "height": 1200
+  },
+  "grafica": {
+    "width": 1920,
+    "height": 1200
+  },
+  "deposito-vacio": {
+    "width": 1920,
+    "height": 1200
+  },
+  "sensor-roto": {
+    "width": 1920,
+    "height": 1200
+  },
+  "lluvia-cerca": {
+    "width": 1920,
+    "height": 1200
+  },
+  "tiempo": {
+    "width": 1920,
+    "height": 1200
+  },
+  "invernadero": {
+    "width": 1920,
+    "height": 1200
+  },
+  "sonido": {
+    "width": 1920,
+    "height": 1200
+  },
+  "movil-escena": {
+    "width": 640,
+    "height": 1385
+  },
+  "movil-noche": {
+    "width": 640,
+    "height": 1385
+  },
+  "movil-ficha": {
+    "width": 640,
+    "height": 1385
+  },
+  "movil-riego-auto": {
+    "width": 640,
+    "height": 1385
+  },
+  "movil-diario": {
+    "width": 640,
+    "height": 1385
+  },
+  "movil-sin-3d": {
+    "width": 640,
+    "height": 1385
+  },
+  "clip-escena": {
+    "width": 1200,
+    "height": 750
+  },
+  "clip-riego": {
+    "width": 1200,
+    "height": 750
+  },
+  "clip-aire": {
+    "width": 1200,
+    "height": 750
+  },
+  "clip-luz": {
+    "width": 1200,
+    "height": 750
+  },
+  "clip-lluvia": {
+    "width": 1200,
+    "height": 750
+  },
+  "clip-rebobinar": {
+    "width": 1200,
+    "height": 750
+  },
+  "clip-dia-en-un-minuto": {
+    "width": 1200,
+    "height": 750
+  },
+  "c1-primer-dia": {
+    "width": 800,
+    "height": 600
+  },
+  "c1-provisional": {
+    "width": 760,
+    "height": 570
+  },
+  "c2-v1": {
+    "width": 1300,
+    "height": 975
+  },
+  "c2-v19": {
+    "width": 1360,
+    "height": 960
+  },
+  "c7-nieve-noche": {
+    "width": 1440,
+    "height": 1080
+  },
+  "ficha-cerca": {
+    "width": 770,
+    "height": 1100
+  },
+  "grafica-cerca": {
+    "width": 770,
+    "height": 1100
+  },
+  "sensor-roto-cerca": {
+    "width": 770,
+    "height": 1100
+  },
+  "tiempo-cerca": {
+    "width": 770,
+    "height": 1100
+  },
+  "invernadero-cerca": {
+    "width": 770,
+    "height": 1100
+  },
+  "sonido-cerca": {
+    "width": 770,
+    "height": 1100
+  },
+  "evolucion-hoy": {
+    "width": 800,
+    "height": 600
+  }
+}

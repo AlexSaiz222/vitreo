@@ -1,0 +1,72 @@
+.ui-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: calc(var(--target-min) + var(--space-4));
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
+  font: inherit;
+  color: var(--ink);
+  text-align: start;
+  background: var(--neu-base);
+  border: 0;
+  border-radius: var(--radius-card);
+  box-shadow: var(--elev-raised-sm);
+  cursor: pointer;
+  transition:
+    box-shadow calc(var(--duration-press) * var(--motion-scale)) var(--ease-out),
+    background-color calc(var(--duration-reveal) * var(--motion-scale)) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-list-row:active:not(:disabled) {
+  box-shadow: var(--elev-pressed);
+}
+
+/* Under the pointer (D131): lighter and a little higher, as the buttons. */
+@media (hover: hover) and (pointer: fine) {
+  .ui-list-row:hover:not(:disabled, :active) {
+    background-color: var(--surface-hover);
+    box-shadow: var(--elev-raised-hover);
+  }
+}
+
+.ui-list-row:disabled {
+  color: var(--ink-soft);
+  background: var(--surface-disabled);
+  box-shadow: none;
+  cursor: default;
+}
+
+/* No reading: the row keeps its surface; only what it says is muted. */
+.ui-list-row[data-muted='true'] {
+  color: var(--ink-soft);
+}
+
+/* The leading icon is decoration, not a control: no well, no shadow. */
+.ui-list-row-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--space-10);
+  height: var(--space-10);
+}
+
+.ui-list-row-text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-list-row-title {
+  font-size: var(--text-16);
+}
+
+.ui-list-row-detail {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.ui-list-row > .ui-icon:last-child {
+  color: var(--ink-soft);
+}
